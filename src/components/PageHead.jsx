@@ -2,11 +2,12 @@ export default function PageHead() {
   return (
     <header className="page-head">
       <div className="wrap">
-        <h1>Choose a therapist and book directly</h1>
+        <h1>Book with Confidence.</h1>
         <p>
-          Pick a profile below, pay her directly with Chime, Zelle, Venmo or
-          Bitcoin, then confirm your booking with your name and a screenshot
-          of the payment.
+        Choose a profile below, then complete your payment using Chime, Zelle, Venmo, or Bitcoin. After payment, send us your name and a screenshot of your payment confirmation to finalize your booking.
+
+Once your booking is confirmed, we'll contact you with the pickup address or, if you prefer to host, we'll arrange for her to come to your location.
+
         </p>
       </div>
     </header>

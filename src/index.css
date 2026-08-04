@@ -103,7 +103,8 @@ nav .wrap{display:flex; align-items:center; justify-content:space-between; heigh
   margin-top:14px; display:flex; flex-direction:column; gap:14px;
 }
 .field label{font-size:0.82rem; font-weight:500; margin-bottom:6px; display:block;}
-.field input[type="text"]{
+.field input[type="text"],
+.field input[type="email"]{
   width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--line);
   background:var(--sand); font-family:'Work Sans',sans-serif; font-size:0.92rem; color:var(--ink);
 }

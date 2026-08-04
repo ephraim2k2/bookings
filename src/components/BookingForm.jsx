@@ -1,21 +1,35 @@
 import { useState } from 'react'
+import { sendBookingSubmission } from '../lib/sendBooking'
 
 export default function BookingForm({ therapistName, idPrefix }) {
   const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [file, setFile] = useState(null)
   const [previewSrc, setPreviewSrc] = useState(null)
-  const [submitted, setSubmitted] = useState(false)
+  const [status, setStatus] = useState('idle') // idle | sending | sent | error
+  const [errorMsg, setErrorMsg] = useState('')
 
   const handleFileChange = (e) => {
-    const file = e.target.files && e.target.files[0]
-    if (!file) return
+    const selected = e.target.files && e.target.files[0]
+    if (!selected) return
+    setFile(selected)
     const reader = new FileReader()
     reader.onload = (ev) => setPreviewSrc(ev.target.result)
-    reader.readAsDataURL(file)
+    reader.readAsDataURL(selected)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setSubmitted(true)
+    if (!file) return
+    setStatus('sending')
+    setErrorMsg('')
+    try {
+      await sendBookingSubmission({ name, email, file, therapistName })
+      setStatus('sent')
+    } catch (err) {
+      setStatus('error')
+      setErrorMsg(err.message)
+    }
   }
 
   return (
@@ -32,6 +46,17 @@ export default function BookingForm({ therapistName, idPrefix }) {
         />
       </div>
       <div className="field">
+        <label htmlFor={`${idPrefix}-email`}>Email</label>
+        <input
+          id={`${idPrefix}-email`}
+          type="email"
+          placeholder="you@example.com"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+      <div className="field">
         <label htmlFor={`${idPrefix}-file`}>Proof of payment (screenshot)</label>
         <div className="file-field">
           <input
@@ -44,14 +69,19 @@ export default function BookingForm({ therapistName, idPrefix }) {
           {previewSrc && <img className="file-preview" src={previewSrc} alt="Payment proof preview" />}
         </div>
       </div>
-      <button type="submit" className="submit-btn" disabled={submitted}>
-        {submitted ? 'Sent ✓' : 'Submit booking'}
+      <button type="submit" className="submit-btn" disabled={status === 'sending' || status === 'sent'}>
+        {status === 'sending' ? 'Sending…' : status === 'sent' ? 'Sent ✓' : 'Submit booking'}
       </button>
       <div className="form-note">We'll confirm your slot by text once we verify payment.</div>
-      {submitted && (
+      {status === 'sent' && (
         <div className="confirm-msg">
           Thanks {name}! We've received your payment proof for {therapistName} and
           will confirm your time slot by text shortly.
+        </div>
+      )}
+      {status === 'error' && (
+        <div className="confirm-msg" style={{ background: 'var(--clay-dark)' }}>
+          Something went wrong sending your booking ({errorMsg}). Please try again.
         </div>
       )}
     </form>
