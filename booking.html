@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grove & Stone — Book a Massage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --forest:#1E2B22;
+    --forest-2:#263B2C;
+    --sage:#9AAE8A;
+    --sage-dim:#71846A;
+    --sand:#F1EADC;
+    --cream:#FAF7F1;
+    --clay:#B97B6D;
+    --clay-dark:#9C6255;
+    --ink:#22291F;
+    --line: rgba(34,41,31,0.14);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    font-weight:400;
+    line-height:1.5;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    letter-spacing:-0.01em;
+  }
+  a{color:inherit;}
+  img,svg{display:block;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 32px;}
+  @media(max-width:600px){.wrap{padding:0 20px;}}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(250,247,241,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:72px;}
+  .logo{display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-size:1.2rem; font-weight:600;}
+  .logo-mark{width:24px; height:24px;}
+  .navlinks{display:flex; gap:28px; font-size:0.9rem; color:var(--sage-dim);}
+  .navlinks a{text-decoration:none; transition:color .2s;}
+  .navlinks a:hover{color:var(--ink);}
+  @media(max-width:600px){.navlinks{gap:16px; font-size:0.82rem;}}
+
+  /* ---------- PAGE HEAD ---------- */
+  .page-head{padding:40px 0 8px;}
+  .page-head h1{font-size:clamp(1.6rem,3vw,2.1rem); font-weight:500;}
+  .page-head p{margin-top:10px; color:var(--sage-dim); font-size:0.98rem; max-width:56ch;}
+
+  /* ---------- PROFILE SECTIONS ---------- */
+  .profile{padding:56px 0; border-top:1px solid var(--line);}
+  .profile.tint{background:var(--sand);}
+  .profile-grid{display:grid; grid-template-columns:0.9fr 1.3fr; gap:48px; align-items:start;}
+  @media(max-width:900px){.profile-grid{grid-template-columns:1fr; gap:28px;}}
+
+  .gallery{display:flex; flex-direction:column; gap:10px;}
+  .gallery-main{height:240px; border-radius:18px; display:flex; align-items:center; justify-content:center; overflow:hidden;}
+  .gallery-thumbs{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .gallery-thumbs > div{height:112px; border-radius:14px; display:flex; align-items:center; justify-content:center;}
+
+  .profile-name{font-family:'Fraunces',serif; font-size:1.7rem; font-weight:600;}
+  .profile-role{color:var(--clay-dark); font-size:0.9rem; margin-top:4px; font-weight:500;}
+  .profile-desc{color:var(--sage-dim); font-size:0.95rem; margin-top:12px; line-height:1.6; max-width:60ch;}
+  .tags{display:flex; flex-wrap:wrap; gap:8px; margin-top:16px;}
+  .tag{
+    font-size:0.76rem; background:var(--cream); color:var(--ink);
+    padding:5px 11px; border-radius:100px; border:1px solid var(--line);
+  }
+
+  .session-row{
+    display:flex; align-items:center; gap:14px; margin-top:22px; flex-wrap:wrap;
+  }
+  .session-row label{font-size:0.82rem; font-weight:500;}
+  .session-row select{
+    padding:10px 14px; border-radius:10px; border:1px solid var(--line);
+    background:var(--cream); font-family:'Work Sans',sans-serif; font-size:0.88rem; color:var(--ink);
+  }
+
+  .block-label{font-size:0.8rem; letter-spacing:0.07em; text-transform:uppercase; color:var(--clay-dark); font-weight:600; margin-top:30px; margin-bottom:14px;}
+
+  .pay-grid-mini{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:520px){.pay-grid-mini{grid-template-columns:1fr;}}
+  .pay-card-mini{
+    background:var(--cream); border:1px solid var(--line); border-radius:14px;
+    padding:16px 16px; display:flex; gap:12px; align-items:flex-start;
+  }
+  .pay-card-mini .icon{width:28px; height:28px; flex-shrink:0; margin-top:2px;}
+  .pay-card-mini h4{font-size:0.9rem; font-weight:600;}
+  .pay-card-mini .value{
+    font-family:monospace; font-size:0.84rem; color:var(--sage-dim); margin-top:4px;
+    word-break:break-all;
+  }
+  .copy-btn{
+    margin-top:8px; background:transparent; border:1px solid var(--line); color:var(--forest);
+    font-size:0.74rem; padding:4px 10px; border-radius:100px; cursor:pointer; font-family:'Work Sans',sans-serif;
+  }
+  .copy-btn:hover{background:var(--sand);}
+
+  .proof-form{
+    background:var(--cream); border:1px solid var(--line); border-radius:18px; padding:24px;
+    margin-top:14px; display:flex; flex-direction:column; gap:14px;
+  }
+  .field label{font-size:0.82rem; font-weight:500; margin-bottom:6px; display:block;}
+  .field input[type="text"]{
+    width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--line);
+    background:var(--sand); font-family:'Work Sans',sans-serif; font-size:0.92rem; color:var(--ink);
+  }
+  .file-field{
+    border:1px dashed var(--line); border-radius:10px; padding:16px; background:var(--sand);
+  }
+  .file-field input[type="file"]{font-size:0.84rem; width:100%;}
+  .file-preview{display:none; margin-top:10px; max-width:160px; border-radius:8px; border:1px solid var(--line);}
+  .submit-btn{
+    background:var(--clay); color:var(--cream); border:none; padding:14px; border-radius:12px;
+    font-size:0.94rem; font-weight:500; cursor:pointer;
+  }
+  .submit-btn:hover{background:var(--clay-dark);}
+  .form-note{font-size:0.76rem; color:var(--sage-dim);}
+  .confirm-msg{
+    display:none; background:var(--forest); color:var(--cream); border-radius:10px;
+    padding:12px 14px; font-size:0.86rem; line-height:1.5;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{background:var(--forest); color:rgba(250,247,241,0.55); padding:36px 0; font-size:0.85rem;}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo">
+      <svg class="logo-mark" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="12" stroke="#B97B6D" stroke-width="1.4"/><path d="M8 13c1.5-3 3.5-4.5 5-4.5s3.5 1.5 5 4.5c-1.5 3-3.5 4.5-5 4.5s-3.5-1.5-5-4.5z" stroke="#1E2B22" stroke-width="1.2"/></svg>
+      Grove &amp; Stone
+    </div>
+    <div class="navlinks">
+      <a href="#emily">Emily</a>
+      <a href="#sarah">Sarah</a>
+      <a href="#rachel">Rachel</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="wrap">
+    <h1>Choose a therapist and book directly</h1>
+    <p>Pick a profile below, pay her directly with Chime, Zelle, Venmo or Bitcoin, then confirm your booking with your name and a screenshot of the payment.</p>
+  </div>
+</header>
+
+<!-- ===================== EMILY ===================== -->
+<section class="profile" id="emily">
+  <div class="wrap profile-grid">
+    <div class="gallery">
+      <div class="gallery-main" style="background:#DCE3D2;">
+        <svg width="96" height="96" viewBox="0 0 92 92"><circle cx="46" cy="34" r="18" fill="#71846A"/><path d="M12 86c0-20 15-32 34-32s34 12 34 32" fill="#71846A"/></svg>
+      </div>
+      <div class="gallery-thumbs">
+        <div style="background:#CFDAC1;">
+          <svg width="60" height="60" viewBox="0 0 92 92"><circle cx="46" cy="16" r="8" fill="#71846A"/><circle cx="46" cy="38" r="16" fill="#71846A"/><path d="M14 86c0-18 14-30 32-30s32 12 32 30" fill="#71846A"/></svg>
+        </div>
+        <div style="background:#E4EBD9;">
+          <svg width="58" height="58" viewBox="0 0 34 34"><path d="M8 20c0-6 5-10 11-10h6c6 0 11 4 11 10v3c0 6-5 10-11 10H19c-6 0-11-4-11-10v-3z" fill="#71846A" opacity="0.85"/><path d="M11 17q9-6 18 0" stroke="#DCE3D2" stroke-width="1.6" fill="none"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="profile-name">Emily Carter</div>
+      <div class="profile-role">Deep tissue &amp; sports recovery · 9 yrs</div>
+      <p class="profile-desc">Works with athletes and desk-bound clients alike; firm pressure, focused on shoulders, back and legs.</p>
+      <div class="tags">
+        <span class="tag">Deep tissue</span>
+        <span class="tag">Sports</span>
+        <span class="tag">Firm pressure</span>
+      </div>
+
+      <div class="session-row">
+        <label for="emily-length">Session</label>
+        <select id="emily-length">
+          <option>30 min — $35</option>
+          <option selected>60 min — $85</option>
+          <option>90 min — $110</option>
+        </select>
+      </div>
+
+      <div class="block-label">Pay Emily</div>
+      <div class="pay-grid-mini">
+        <div class="pay-card-mini">
+          <svg class="icon" viewBox="0 0 34 34" fill="none"><rect x="4" y="4" width="26" height="26" rx="8" stroke="#71846A" stroke-width="1.6"/><path d="M17 10v14M13 13.5c0-2 2-3.5 4-3.5s4 1.5 4 3.5-2 3-4 3.5-4 1.5-4 3.5 2 3.5 4 3.5 4-1.5 4-3.5" stroke="#71846A" stroke-width="1.4" fill="none"/></svg>
+          <div>
+            <h4>Chime</h4>
+            <div class="value" id="emily-chime">$EmilyCarter</div>
+            <button class="copy-btn" onclick="copyValue(this,'emily-chime')">Copy</button>
+          </div>
+        </div>
+        <div class="pay-card-mini">
+          <svg class="icon" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="14" stroke="#71846A" stroke-width="1.6"/><path d="M11 12h12l-12 10h12" stroke="#71846A" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div>
+            <h4>Zelle</h4>
+            <div class="value" id="emily-zelle">emily.carter@grovestone.co</div>
+            <button class="copy-btn" onclick="copyValue(this,'emily-zelle')">Copy</button>
+          </div>
+        </div>
+        <div class="pay-card-mini">
+          <svg class="icon" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="14" stroke="#71846A" stroke-width="1.6"/><path d="M11 10l5 14 8-14" stroke="#71846A" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div>
+            <h4>Venmo</h4>
+            <div class="value" id="emily-venmo">@Emily-Carter</div>
+            <button class="copy-btn" onclick="copyValue(this,'emily-venmo')">Copy</button>
+          </div>
+        </div>
+        <div class="pay-card-mini">
+          <svg class="icon" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="14" stroke="#71846A" stroke-width="1.6"/><text x="17" y="23" font-size="16" text-anchor="middle" fill="#71846A" font-family="serif">฿</text></svg>
+          <div>
+            <h4>Bitcoin</h4>
+            <div class="value" id="emily-btc">bc1q-emily-placeholder-addr</div>
+            <button class="copy-btn" onclick="copyValue(this,'emily-btc')">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="block-label">Confirm your booking</div>
+      <form class="proof-form" onsubmit="submitProof(event,'Emily')">
+        <div class="field">
+          <label for="emily-name">Full name</label>
+          <input id="emily-name" class="name-input" type="text" placeholder="Your name" required>
+        </div>
+        <div class="field">
+          <label for="emily-file">Proof of payment (screenshot)</label>
+          <div class="file-field">
+            <input id="emily-file" class="file-input" type="file" accept="image/*" required>
+            <img class="file-preview">
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Submit booking</button>
+        <div class="form-note">We'll confirm your slot by text once we verify payment.</div>
+        <div class="confirm-msg"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SARAH ===================== -->
+<section class="profile tint" id="sarah">
+  <div class="wrap profile-grid">
+    <div class="gallery">
+      <div class="gallery-main" style="background:#EAD9CF;">
+        <svg width="96" height="96" viewBox="0 0 92 92"><circle cx="46" cy="34" r="18" fill="#B97B6D"/><path d="M12 86c0-20 15-32 34-32s34 12 34 32" fill="#B97B6D"/></svg>
+      </div>
+      <div class="gallery-thumbs">
+        <div style="background:#E9CCBC;">
+          <svg width="60" height="60" viewBox="0 0 92 92"><circle cx="46" cy="16" r="8" fill="#B97B6D"/><circle cx="46" cy="38" r="16" fill="#B97B6D"/><path d="M14 86c0-18 14-30 32-30s32 12 32 30" fill="#B97B6D"/></svg>
+        </div>
+        <div style="background:#F3E1D6;">
+          <svg width="58" height="58" viewBox="0 0 34 34"><path d="M8 20c0-6 5-10 11-10h6c6 0 11 4 11 10v3c0 6-5 10-11 10H19c-6 0-11-4-11-10v-3z" fill="#B97B6D" opacity="0.85"/><path d="M11 17q9-6 18 0" stroke="#EAD9CF" stroke-width="1.6" fill="none"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="profile-name">Sarah Mitchell</div>
+      <div class="profile-role">Swedish &amp; aromatherapy · 6 yrs</div>
+      <p class="profile-desc">Gentle, flowing strokes for stress relief and better sleep, with a choice of essential oil blends.</p>
+      <div class="tags">
+        <span class="tag">Swedish</span>
+        <span class="tag">Aromatherapy</span>
+        <span class="tag">Light–medium</span>
+      </div>
+
+      <div class="session-row">
+        <label for="sarah-length">Session</label>
+        <select id="sarah-length">
+          <option>30 min — $35</option>
+          <option selected>60 min — $70</option>
+          <option>90 min — $110</option>
+        </select>
+      </div>
+
+      <div class="block-label">Pay Sarah</div>
+      <div class="pay-grid-mini">
+        <div class="pay-card-mini">
+          <svg class="icon" viewBox="0 0 34 34" fill="none"><rect x="4" y="4" width="26" height="26" rx="8" stroke="#B97B6D" stroke-width="1.6"/><path d="M17 10v14M13 13.5c0-2 2-3.5 4-3.5s4 1.5 4 3.5-2 3-4 3.5-4 1.5-4 3.5 2 3.5 4 3.5 4-1.5 4-3.5" stroke="#B97B6D" stroke-width="1.4" fill="none"/></svg>
+          <div>
+            <h4>Chime</h4>
+            <div class="value" id="sarah-chime">$SarahMitchell</div>
+            <button class="copy-btn" onclick="copyValue(this,'sarah-chime')">Copy</button>
+          </div>
+        </div>
+        <div class="pay-card-mini">
+          <svg class="icon" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="14" stroke="#B97B6D" stroke-width="1.6"/><path d="M11 12h12l-12 10h12" stroke="#B97B6D" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div>
+            <h4>Zelle</h4>
+            <div class="value" id="sarah-zelle">sarah.mitchell@grovestone.co</div>
+            <button class="copy-btn" onclick="copyValue(this,'sarah-zelle')">Copy</button>
+          </div>
+        </div>
+        <div class="pay-card-mini">
+          <svg class="icon" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="14" stroke="#B97B6D" stroke-width="1.6"/><path d="M11 10l5 14 8-14" stroke="#B97B6D" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div>
+            <h4>Venmo</h4>
+            <div class="value" id="sarah-venmo">@Sarah-Mitchell</div>
+            <button class="copy-btn" onclick="copyValue(this,'sarah-venmo')">Copy</button>
+          </div>
+        </div>
+        <div class="pay-card-mini">
+          <svg class="icon" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="14" stroke="#B97B6D" stroke-width="1.6"/><text x="17" y="23" font-size="16" text-anchor="middle" fill="#B97B6D" font-family="serif">฿</text></svg>
+          <div>
+            <h4>Bitcoin</h4>
+            <div class="value" id="sarah-btc">bc1q-sarah-placeholder-addr</div>
+            <button class="copy-btn" onclick="copyValue(this,'sarah-btc')">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="block-label">Confirm your booking</div>
+      <form class="proof-form" onsubmit="submitProof(event,'Sarah')">
+        <div class="field">
+          <label for="sarah-name">Full name</label>
+          <input id="sarah-name" class="name-input" type="text" placeholder="Your name" required>
+        </div>
+        <div class="field">
+          <label for="sarah-file">Proof of payment (screenshot)</label>
+          <div class="file-field">
+            <input id="sarah-file" class="file-input" type="file" accept="image/*" required>
+            <img class="file-preview">
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Submit booking</button>
+        <div class="form-note">We'll confirm your slot by text once we verify payment.</div>
+        <div class="confirm-msg"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== RACHEL ===================== -->
+<section class="profile" id="rachel">
+  <div class="wrap profile-grid">
+    <div class="gallery">
+      <div class="gallery-main" style="background:#D7DEC9;">
+        <svg width="96" height="96" viewBox="0 0 92 92"><circle cx="46" cy="34" r="18" fill="#9AAE8A"/><path d="M12 86c0-20 15-32 34-32s34 12 34 32" fill="#9AAE8A"/></svg>
+      </div>
+      <div class="gallery-thumbs">
+        <div style="background:#C9D3B8;">
+          <svg width="60" height="60" viewBox="0 0 92 92"><circle cx="46" cy="16" r="8" fill="#9AAE8A"/><circle cx="46" cy="38" r="16" fill="#9AAE8A"/><path d="M14 86c0-18 14-30 32-30s32 12 32 30" fill="#9AAE8A"/></svg>
+        </div>
+        <div style="background:#E2E8D6;">
+          <svg width="58" height="58" viewBox="0 0 34 34"><path d="M8 20c0-6 5-10 11-10h6c6 0 11 4 11 10v3c0 6-5 10-11 10H19c-6 0-11-4-11-10v-3z" fill="#9AAE8A" opacity="0.85"/><path d="M11 17q9-6 18 0" stroke="#D7DEC9" stroke-width="1.6" fill="none"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="profile-name">Rachel Bennett</div>
+      <div class="profile-role">Prenatal &amp; reflexology · 7 yrs</div>
+      <p class="profile-desc">Certified in prenatal-safe technique and foot reflexology; side-lying positioning available on request.</p>
+      <div class="tags">
+        <span class="tag">Prenatal</span>
+        <span class="tag">Reflexology</span>
+        <span class="tag">Gentle</span>
+      </div>
+
+      <div class="session-row">
+        <label for="rachel-length">Session</label>
+        <select id="rachel-length">
+          <option>30 min — $35</option>
+          <option selected>60 min — $75</option>
+          <option>90 min — $110</option>
+        </select>
+      </div>
+
+      <div class="block-label">Pay Rachel</div>
+      <div class="pay-grid-mini">
+        <div class="pay-card-mini">
+          <svg class="icon" viewBox="0 0 34 34" fill="none"><rect x="4" y="4" width="26" height="26" rx="8" stroke="#9AAE8A" stroke-width="1.6"/><path d="M17 10v14M13 13.5c0-2 2-3.5 4-3.5s4 1.5 4 3.5-2 3-4 3.5-4 1.5-4 3.5 2 3.5 4 3.5 4-1.5 4-3.5" stroke="#9AAE8A" stroke-width="1.4" fill="none"/></svg>
+          <div>
+            <h4>Chime</h4>
+            <div class="value" id="rachel-chime">$RachelBennett</div>
+            <button class="copy-btn" onclick="copyValue(this,'rachel-chime')">Copy</button>
+          </div>
+        </div>
+        <div class="pay-card-mini">
+          <svg class="icon" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="14" stroke="#9AAE8A" stroke-width="1.6"/><path d="M11 12h12l-12 10h12" stroke="#9AAE8A" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div>
+            <h4>Zelle</h4>
+            <div class="value" id="rachel-zelle">rachel.bennett@grovestone.co</div>
+            <button class="copy-btn" onclick="copyValue(this,'rachel-zelle')">Copy</button>
+          </div>
+        </div>
+        <div class="pay-card-mini">
+          <svg class="icon" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="14" stroke="#9AAE8A" stroke-width="1.6"/><path d="M11 10l5 14 8-14" stroke="#9AAE8A" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div>
+            <h4>Venmo</h4>
+            <div class="value" id="rachel-venmo">@Rachel-Bennett</div>
+            <button class="copy-btn" onclick="copyValue(this,'rachel-venmo')">Copy</button>
+          </div>
+        </div>
+        <div class="pay-card-mini">
+          <svg class="icon" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="14" stroke="#9AAE8A" stroke-width="1.6"/><text x="17" y="23" font-size="16" text-anchor="middle" fill="#9AAE8A" font-family="serif">฿</text></svg>
+          <div>
+            <h4>Bitcoin</h4>
+            <div class="value" id="rachel-btc">bc1q-rachel-placeholder-addr</div>
+            <button class="copy-btn" onclick="copyValue(this,'rachel-btc')">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="block-label">Confirm your booking</div>
+      <form class="proof-form" onsubmit="submitProof(event,'Rachel')">
+        <div class="field">
+          <label for="rachel-name">Full name</label>
+          <input id="rachel-name" class="name-input" type="text" placeholder="Your name" required>
+        </div>
+        <div class="field">
+          <label for="rachel-file">Proof of payment (screenshot)</label>
+          <div class="file-field">
+            <input id="rachel-file" class="file-input" type="file" accept="image/*" required>
+            <img class="file-preview">
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Submit booking</button>
+        <div class="form-note">We'll confirm your slot by text once we verify payment.</div>
+        <div class="confirm-msg"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Grove &amp; Stone Studio, Wuse II, Abuja</span>
+    <span>Licensed therapists · By appointment only</span>
+  </div>
+</footer>
+
+<script>
+  function copyValue(btn, id){
+    const text = document.getElementById(id).textContent;
+    navigator.clipboard.writeText(text).then(()=>{
+      const original = btn.textContent;
+      btn.textContent = 'Copied';
+      setTimeout(()=>{ btn.textContent = original; }, 1500);
+    });
+  }
+
+  function submitProof(event, therapist){
+    event.preventDefault();
+    const form = event.target;
+    const name = form.querySelector('.name-input').value.trim();
+    const fileInput = form.querySelector('.file-input');
+    const preview = form.querySelector('.file-preview');
+    const msg = form.querySelector('.confirm-msg');
+    const btn = form.querySelector('.submit-btn');
+
+    if(fileInput.files && fileInput.files[0]){
+      const reader = new FileReader();
+      reader.onload = e => {
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+    }
+
+    msg.textContent = `Thanks ${name}! We've received your payment proof for ${therapist} and will confirm your time slot by text shortly.`;
+    msg.style.display = 'block';
+    btn.textContent = 'Sent ✓';
+    btn.disabled = true;
+  }
+</script>
+
+</body>
+</html>

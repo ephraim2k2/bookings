@@ -1,0 +1,63 @@
+export const therapists = [
+  {
+    id: 'emily',
+    name: 'Emily Carter',
+    role: 'Deep tissue & sports recovery · 9 yrs',
+    desc: 'Works with athletes and desk-bound clients alike; firm pressure, focused on shoulders, back and legs.',
+    tags: ['Deep tissue', 'Sports', 'Firm pressure'],
+    accent: '#71846A',
+    gallery: { main: '#DCE3D2', thumb1: '#CFDAC1', thumb2: '#E4EBD9' },
+    sessions: [
+      { label: '30 min — $35' },
+      { label: '60 min — $85', selected: true },
+      { label: '90 min — $110' },
+    ],
+    payment: {
+      chime: '$EmilyCarter',
+      zelle: 'emily.carter@grovestone.co',
+      venmo: '@Emily-Carter',
+      btc: 'bc1q-emily-placeholder-addr',
+    },
+  },
+  {
+    id: 'sarah',
+    name: 'Sarah Mitchell',
+    role: 'Swedish & aromatherapy · 6 yrs',
+    desc: 'Gentle, flowing strokes for stress relief and better sleep, with a choice of essential oil blends.',
+    tags: ['Swedish', 'Aromatherapy', 'Light–medium'],
+    accent: '#B97B6D',
+    tint: true,
+    gallery: { main: '#EAD9CF', thumb1: '#E9CCBC', thumb2: '#F3E1D6' },
+    sessions: [
+      { label: '30 min — $35' },
+      { label: '60 min — $70', selected: true },
+      { label: '90 min — $110' },
+    ],
+    payment: {
+      chime: '$SarahMitchell',
+      zelle: 'sarah.mitchell@grovestone.co',
+      venmo: '@Sarah-Mitchell',
+      btc: 'bc1q-sarah-placeholder-addr',
+    },
+  },
+  {
+    id: 'rachel',
+    name: 'Rachel Bennett',
+    role: 'Prenatal & reflexology · 7 yrs',
+    desc: 'Certified in prenatal-safe technique and foot reflexology; side-lying positioning available on request.',
+    tags: ['Prenatal', 'Reflexology', 'Gentle'],
+    accent: '#9AAE8A',
+    gallery: { main: '#D7DEC9', thumb1: '#C9D3B8', thumb2: '#E2E8D6' },
+    sessions: [
+      { label: '30 min — $35' },
+      { label: '60 min — $75', selected: true },
+      { label: '90 min — $110' },
+    ],
+    payment: {
+      chime: '$RachelBennett',
+      zelle: 'rachel.bennett@grovestone.co',
+      venmo: '@Rachel-Bennett',
+      btc: 'bc1q-rachel-placeholder-addr',
+    },
+  },
+]
