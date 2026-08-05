@@ -112,7 +112,8 @@ nav .wrap{display:flex; align-items:center; justify-content:space-between; heigh
   border:1px dashed var(--line); border-radius:10px; padding:16px; background:var(--sand);
 }
 .file-field input[type="file"]{font-size:0.84rem; width:100%;}
-.file-preview{margin-top:10px; max-width:160px; border-radius:8px; border:1px solid var(--line);}
+.file-preview{margin-top:10px; max-width:160px; border-radius:8px; border:1px solid var(--line); cursor:zoom-in;}
+.file-preview:hover{opacity:0.9;}
 .submit-btn{
   background:var(--clay); color:var(--cream); border:none; padding:14px; border-radius:12px;
   font-size:0.94rem; font-weight:500; cursor:pointer;
@@ -125,6 +126,58 @@ nav .wrap{display:flex; align-items:center; justify-content:space-between; heigh
   padding:12px 14px; font-size:0.86rem; line-height:1.5;
 }
 
+/* ---------- LIGHTBOX PREVIEW ---------- */
+.lightbox-overlay{
+  position:fixed; top:0; left:0; right:0; bottom:0; z-index:100;
+  background:rgba(0,0,0,0.85); backdrop-filter:blur(6px);
+  display:flex; align-items:center; justify-content:center;
+  padding:20px; animation:fadeIn 0.2s ease-out;
+}
+.lightbox-content{
+  position:relative; max-width:90vw; max-height:90vh;
+  display:flex; align-items:center; justify-content:center;
+}
+.lightbox-img{
+  max-width:90vw; max-height:85vh; width:auto; height:auto;
+  border-radius:12px; box-shadow:0 20px 40px rgba(0,0,0,0.5);
+  object-fit:contain;
+}
+.lightbox-close{
+  position:absolute; top:-18px; right:-18px; width:36px; height:36px;
+  border-radius:50%; background:var(--cream); color:var(--ink);
+  border:none; font-size:1.2rem; font-weight:bold; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 12px rgba(0,0,0,0.3); transition:transform 0.15s ease;
+}
+.lightbox-close:hover{transform:scale(1.1);}
+@keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
+
 /* ---------- FOOTER ---------- */
 footer{background:var(--forest); color:rgba(250,247,241,0.55); padding:36px 0; font-size:0.85rem;}
 footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+
+/* ---------- WHATSAPP BUTTON ---------- */
+.whatsapp-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #25D366; color: #ffffff; text-decoration: none;
+  font-weight: 500; font-size: 0.86rem; padding: 8px 16px;
+  border-radius: 100px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.whatsapp-btn:hover {
+  background: #20ba5a; transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.35);
+  color: #ffffff;
+}
+
+.whatsapp-float {
+  position: fixed; bottom: 24px; right: 24px; z-index: 90;
+  padding: 12px 20px; font-size: 0.9rem; font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+@media(max-width:600px){
+  .whatsapp-float span { display: none; }
+  .whatsapp-float { padding: 14px; border-radius: 50%; bottom: 16px; right: 16px; }
+}
+
+

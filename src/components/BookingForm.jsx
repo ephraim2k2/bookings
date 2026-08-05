@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { sendBookingSubmission } from '../lib/sendBooking'
+import ImageLightbox from './ImageLightbox'
 
-export default function BookingForm({ therapistName, idPrefix }) {
+export default function BookingForm({ therapistName, sessionType, idPrefix }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [file, setFile] = useState(null)
   const [previewSrc, setPreviewSrc] = useState(null)
+  const [showLightbox, setShowLightbox] = useState(false)
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
   const [errorMsg, setErrorMsg] = useState('')
 
@@ -24,7 +26,7 @@ export default function BookingForm({ therapistName, idPrefix }) {
     setStatus('sending')
     setErrorMsg('')
     try {
-      await sendBookingSubmission({ name, email, file, therapistName })
+      await sendBookingSubmission({ name, email, file, therapistName, sessionType })
       setStatus('sent')
     } catch (err) {
       setStatus('error')
@@ -33,57 +35,71 @@ export default function BookingForm({ therapistName, idPrefix }) {
   }
 
   return (
-    <form className="proof-form" onSubmit={handleSubmit}>
-      <div className="field">
-        <label htmlFor={`${idPrefix}-name`}>Full name</label>
-        <input
-          id={`${idPrefix}-name`}
-          type="text"
-          placeholder="Your name"
-          required
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor={`${idPrefix}-email`}>Email</label>
-        <input
-          id={`${idPrefix}-email`}
-          type="email"
-          placeholder="you@example.com"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor={`${idPrefix}-file`}>Proof of payment (screenshot)</label>
-        <div className="file-field">
+    <>
+      <form className="proof-form" onSubmit={handleSubmit}>
+        <div className="field">
+          <label htmlFor={`${idPrefix}-name`}>Full name</label>
           <input
-            id={`${idPrefix}-file`}
-            type="file"
-            accept="image/*"
+            id={`${idPrefix}-name`}
+            type="text"
+            placeholder="Your name"
             required
-            onChange={handleFileChange}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
-          {previewSrc && <img className="file-preview" src={previewSrc} alt="Payment proof preview" />}
         </div>
-      </div>
-      <button type="submit" className="submit-btn" disabled={status === 'sending' || status === 'sent'}>
-        {status === 'sending' ? 'Sending…' : status === 'sent' ? 'Sent ✓' : 'Submit booking'}
-      </button>
-      <div className="form-note">We'll confirm your slot by text once we verify payment.</div>
-      {status === 'sent' && (
-        <div className="confirm-msg">
-          Thanks {name}! We've received your payment proof for {therapistName} and
-          will confirm your time slot by text shortly.
+        <div className="field">
+          <label htmlFor={`${idPrefix}-email`}>Email</label>
+          <input
+            id={`${idPrefix}-email`}
+            type="email"
+            placeholder="you@example.com"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
+        <div className="field">
+          <label htmlFor={`${idPrefix}-file`}>Proof of payment (screenshot)</label>
+          <div className="file-field">
+            <input
+              id={`${idPrefix}-file`}
+              type="file"
+              accept="image/*"
+              required
+              onChange={handleFileChange}
+            />
+            {previewSrc && (
+              <img
+                className="file-preview"
+                src={previewSrc}
+                alt="Payment proof preview"
+                onClick={() => setShowLightbox(true)}
+                title="Click to expand preview"
+              />
+            )}
+          </div>
+        </div>
+        <button type="submit" className="submit-btn" disabled={status === 'sending' || status === 'sent'}>
+          {status === 'sending' ? 'Sending…' : status === 'sent' ? 'Sent ✓' : 'Submit booking'}
+        </button>
+        <div className="form-note">We'll confirm your slot by email once we verify payment.</div>
+        {status === 'sent' && (
+          <div className="confirm-msg">
+            Thanks {name}! We've received your payment proof for {therapistName} and
+            will confirm your time slot by email shortly.
+          </div>
+        )}
+        {status === 'error' && (
+          <div className="confirm-msg" style={{ background: 'var(--clay-dark)' }}>
+            Something went wrong sending your booking ({errorMsg}). Please try again.
+          </div>
+        )}
+      </form>
+      {showLightbox && previewSrc && (
+        <ImageLightbox src={previewSrc} alt="Payment proof preview" onClose={() => setShowLightbox(false)} />
       )}
-      {status === 'error' && (
-        <div className="confirm-msg" style={{ background: 'var(--clay-dark)' }}>
-          Something went wrong sending your booking ({errorMsg}). Please try again.
-        </div>
-      )}
-    </form>
+    </>
   )
 }
+

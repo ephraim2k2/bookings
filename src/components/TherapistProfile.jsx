@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import Gallery from './Gallery'
 import PayCard from './PayCard'
 import BookingForm from './BookingForm'
@@ -11,6 +12,9 @@ const PAY_LABELS = {
 
 export default function TherapistProfile({ therapist }) {
   const { id, name, role, desc, tags, accent, tint, gallery, sessions, payment } = therapist
+  const [selectedSession, setSelectedSession] = useState(
+    sessions.find((s) => s.selected)?.label || sessions[0]?.label
+  )
 
   return (
     <section className={`profile${tint ? ' tint' : ''}`} id={id}>
@@ -19,26 +23,34 @@ export default function TherapistProfile({ therapist }) {
 
         <div>
           <div className="profile-name">{name}</div>
-          <div className="profile-role">{role}</div>
-          <p className="profile-desc">{desc}</p>
-          <div className="tags">
-            {tags.map((tag) => (
-              <span className="tag" key={tag}>
-                {tag}
-              </span>
-            ))}
-          </div>
+          {role && <div className="profile-role">{role}</div>}
+          {desc && <p className="profile-desc">{desc}</p>}
+          {tags && tags.length > 0 && (
+            <div className="tags">
+              {tags.map((tag) => (
+                <span className="tag" key={tag}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
 
           <div className="session-row">
             <label htmlFor={`${id}-length`}>Session</label>
-            <select id={`${id}-length`} defaultValue={sessions.find((s) => s.selected)?.label}>
+            <select
+              id={`${id}-length`}
+              value={selectedSession}
+              onChange={(e) => setSelectedSession(e.target.value)}
+            >
               {sessions.map((s) => (
-                <option key={s.label}>{s.label}</option>
+                <option key={s.label} value={s.label}>
+                  {s.label}
+                </option>
               ))}
             </select>
           </div>
 
-          <div className="block-label">Pay {name.split(' ')[0]}</div>
+          <div className="block-label">Pay for {name.split(' ')[0]}</div>
           <div className="pay-grid-mini">
             {Object.entries(payment).map(([type, value]) => (
               <PayCard key={type} type={type} label={PAY_LABELS[type]} value={value} accent={accent} />
@@ -46,7 +58,7 @@ export default function TherapistProfile({ therapist }) {
           </div>
 
           <div className="block-label">Confirm your booking</div>
-          <BookingForm therapistName={name.split(' ')[0]} idPrefix={id} />
+          <BookingForm therapistName={name.split(' ')[0]} sessionType={selectedSession} idPrefix={id} />
         </div>
       </div>
     </section>
