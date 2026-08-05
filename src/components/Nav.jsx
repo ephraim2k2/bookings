@@ -1,10 +1,16 @@
 import { therapists } from '../data/therapists'
 
-export default function Nav() {
+export default function Nav({ currentRoute, onNavigate }) {
+  const isIndividualPage = currentRoute && currentRoute !== 'home'
+
   return (
     <nav>
       <div className="wrap">
-        <div className="logo">
+        <div
+          className="logo"
+          style={{ cursor: isIndividualPage ? 'default' : 'pointer' }}
+          onClick={() => !isIndividualPage && onNavigate('home')}
+        >
           <svg className="logo-mark" viewBox="0 0 26 26" fill="none">
             <circle cx="13" cy="13" r="12" stroke="#B97B6D" strokeWidth="1.4" />
             <path
@@ -15,16 +21,34 @@ export default function Nav() {
           </svg>
           Grove &amp; Stone
         </div>
-        <div className="navlinks">
-          {therapists.map((t) => (
-            <a key={t.id} href={`#${t.id}`}>
-              {t.name.split(' ')[0]}
+        {!isIndividualPage && (
+          <div className="navlinks">
+            <a
+              href="#/"
+              className={currentRoute === 'home' ? 'active-nav' : ''}
+              onClick={(e) => {
+                e.preventDefault()
+                onNavigate('home')
+              }}
+            >
+              All Therapists
             </a>
-          ))}
-        </div>
+            {therapists.map((t) => (
+              <a
+                key={t.id}
+                href={`#/${t.id}`}
+                className={currentRoute === t.id ? 'active-nav' : ''}
+                onClick={(e) => {
+                  e.preventDefault()
+                  onNavigate(t.id)
+                }}
+              >
+                {t.name.split(' ')[0]}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
     </nav>
   )
 }
-
-
