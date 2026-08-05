@@ -7,6 +7,7 @@ export default function BookingForm({ therapistName, sessionType, idPrefix }) {
   const [email, setEmail] = useState('')
   const [file, setFile] = useState(null)
   const [previewSrc, setPreviewSrc] = useState(null)
+  const [submittedName, setSubmittedName] = useState('')
   const [showLightbox, setShowLightbox] = useState(false)
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
   const [errorMsg, setErrorMsg] = useState('')
@@ -25,9 +26,21 @@ export default function BookingForm({ therapistName, sessionType, idPrefix }) {
     if (!file) return
     setStatus('sending')
     setErrorMsg('')
+    const currentName = name
     try {
-      await sendBookingSubmission({ name, email, file, therapistName, sessionType })
+      await sendBookingSubmission({ name: currentName, email, file, therapistName, sessionType })
+      setSubmittedName(currentName)
       setStatus('sent')
+      setName('')
+      setEmail('')
+      setFile(null)
+      setPreviewSrc(null)
+      e.target.reset()
+
+      // Reload page after 2.5 seconds to refresh to a completely clean state
+      setTimeout(() => {
+        window.location.reload()
+      }, 2500)
     } catch (err) {
       setStatus('error')
       setErrorMsg(err.message)
@@ -86,7 +99,7 @@ export default function BookingForm({ therapistName, sessionType, idPrefix }) {
         <div className="form-note">We'll confirm your slot by email once we verify payment.</div>
         {status === 'sent' && (
           <div className="confirm-msg">
-            Thanks {name}! We've received your payment proof for {therapistName} and
+            Thanks {submittedName || 'there'}! We've received your payment proof for {therapistName} and
             will confirm your time slot by email shortly.
           </div>
         )}
