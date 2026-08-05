@@ -15,7 +15,7 @@ export default function Gallery({ accent, gallery }) {
 
   return (
     <>
-      <div className="gallery">
+      <div className="gallery" onContextMenu={(e) => e.preventDefault()}>
         <div
           className="gallery-main"
           onClick={() => isImage(currentMain) && setLightboxSrc(currentMain)}
@@ -27,7 +27,13 @@ export default function Gallery({ accent, gallery }) {
           title={isImage(currentMain) ? 'Click to view full image' : ''}
         >
           {isImage(currentMain) ? (
-            <img src={currentMain} alt="Profile main" style={{ width: '120%', height: '120%', objectFit: 'cover' }} />
+            <img
+              src={currentMain}
+              alt="Profile main"
+              draggable="false"
+              onContextMenu={(e) => e.preventDefault()}
+              style={{ width: '120%', height: '120%', objectFit: 'cover' }}
+            />
           ) : (
             <svg width="96" height="96" viewBox="0 0 92 92">
               <circle cx="46" cy="34" r="18" fill={accent} />
@@ -47,7 +53,13 @@ export default function Gallery({ accent, gallery }) {
             }}
           >
             {isImage(gallery.thumb1) ? (
-              <img src={gallery.thumb1} alt="Thumbnail 1" style={{ width: '120%', height: '120%', objectFit: 'cover' }} />
+              <img
+                src={gallery.thumb1}
+                alt="Thumbnail 1"
+                draggable="false"
+                onContextMenu={(e) => e.preventDefault()}
+                style={{ width: '120%', height: '120%', objectFit: 'cover' }}
+              />
             ) : (
               <svg width="60" height="60" viewBox="0 0 92 92">
                 <circle cx="46" cy="16" r="8" fill={accent} />
@@ -67,7 +79,13 @@ export default function Gallery({ accent, gallery }) {
             }}
           >
             {isImage(gallery.thumb2) ? (
-              <img src={gallery.thumb2} alt="Thumbnail 2" style={{ width: '120%', height: '120%', objectFit: 'cover' }} />
+              <img
+                src={gallery.thumb2}
+                alt="Thumbnail 2"
+                draggable="false"
+                onContextMenu={(e) => e.preventDefault()}
+                style={{ width: '120%', height: '120%', objectFit: 'cover' }}
+              />
             ) : (
               <svg width="58" height="58" viewBox="0 0 34 34">
                 <path

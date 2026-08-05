@@ -20,7 +20,35 @@ function App() {
       setCurrentRoute(getRouteFromHash())
     }
     window.addEventListener('hashchange', handleHashChange)
-    return () => window.removeEventListener('hashchange', handleHashChange)
+
+    // Global Anti-Download and Anti-Right-Click Protection
+    const handleContextMenu = (e) => {
+      e.preventDefault()
+    }
+    const handleKeyDown = (e) => {
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        (e.key === 's' || e.key === 'S' || e.key === 'u' || e.key === 'U' || e.key === 'p' || e.key === 'P')
+      ) {
+        e.preventDefault()
+      }
+    }
+    const handleDragStart = (e) => {
+      if (e.target.tagName === 'IMG') {
+        e.preventDefault()
+      }
+    }
+
+    document.addEventListener('contextmenu', handleContextMenu)
+    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('dragstart', handleDragStart)
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange)
+      document.removeEventListener('contextmenu', handleContextMenu)
+      document.removeEventListener('keydown', handleKeyDown)
+      document.removeEventListener('dragstart', handleDragStart)
+    }
   }, [])
 
   const navigateTo = (route) => {

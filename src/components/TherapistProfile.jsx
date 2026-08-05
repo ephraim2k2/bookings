@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import Gallery from './Gallery'
 import PayCard from './PayCard'
 import BookingForm from './BookingForm'
@@ -11,10 +10,7 @@ const PAY_LABELS = {
 }
 
 export default function TherapistProfile({ therapist }) {
-  const { id, name, role, desc, tags, accent, tint, gallery, sessions, payment } = therapist
-  const [selectedSession, setSelectedSession] = useState(
-    sessions.find((s) => s.selected)?.label || sessions[0]?.label
-  )
+  const { id, name, role, desc, tags, accent, tint, gallery, payment } = therapist
 
   return (
     <section className={`profile standalone-page${tint ? ' tint' : ''}`} id={id}>
@@ -36,21 +32,6 @@ export default function TherapistProfile({ therapist }) {
               </div>
             )}
 
-            <div className="session-row">
-              <label htmlFor={`${id}-length`}>Session</label>
-              <select
-                id={`${id}-length`}
-                value={selectedSession}
-                onChange={(e) => setSelectedSession(e.target.value)}
-              >
-                {sessions.map((s) => (
-                  <option key={s.label} value={s.label}>
-                    {s.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
             <div className="block-label">Pay for {name.split(' ')[0]}</div>
             <div className="pay-grid-mini">
               {Object.entries(payment).map(([type, value]) => (
@@ -59,7 +40,7 @@ export default function TherapistProfile({ therapist }) {
             </div>
 
             <div className="block-label">Confirm your booking</div>
-            <BookingForm therapistName={name.split(' ')[0]} sessionType={selectedSession} idPrefix={id} />
+            <BookingForm therapistName={name.split(' ')[0]} idPrefix={id} />
           </div>
         </div>
       </div>

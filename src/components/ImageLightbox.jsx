@@ -12,12 +12,22 @@ export default function ImageLightbox({ src, alt, onClose }) {
   if (!src) return null
 
   return (
-    <div className="lightbox-overlay" onClick={onClose}>
+    <div
+      className="lightbox-overlay"
+      onClick={onClose}
+      onContextMenu={(e) => e.preventDefault()}
+    >
       <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
         <button className="lightbox-close" onClick={onClose} aria-label="Close preview">
           ✕
         </button>
-        <img src={src} alt={alt || 'Full size preview'} className="lightbox-img" />
+        <img
+          src={src}
+          alt={alt || 'Full size preview'}
+          className="lightbox-img"
+          draggable="false"
+          onContextMenu={(e) => e.preventDefault()}
+        />
       </div>
     </div>
   )

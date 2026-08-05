@@ -26,6 +26,31 @@ h1,h2,h3,.display{
 }
 a{color:inherit;}
 img,svg{display:block;}
+img {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  -khtml-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
+  user-drag: none !important;
+  pointer-events: none !important;
+}
+body {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+input, textarea, select {
+  -webkit-user-select: auto !important;
+  user-select: auto !important;
+}
+@media print {
+  html, body {
+    display: none !important;
+  }
+}
 .wrap{max-width:1120px; margin:0 auto; padding:0 32px;}
 @media(max-width:600px){.wrap{padding:0 20px;}}
 
@@ -98,16 +123,43 @@ nav .wrap{display:flex; align-items:center; justify-content:space-between; heigh
 }
 .copy-btn:hover{background:var(--sand);}
 
+.alt-payment-note {
+  margin-top: 14px;
+  background: var(--sand);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 0.88rem;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.alt-pay-whatsapp-link {
+  color: #128C7E;
+  font-weight: 600;
+  text-decoration: underline;
+  transition: opacity 0.2s ease;
+}
+.alt-pay-whatsapp-link:hover {
+  opacity: 0.8;
+}
+
+
 .proof-form{
   background:var(--cream); border:1px solid var(--line); border-radius:18px; padding:24px;
   margin-top:14px; display:flex; flex-direction:column; gap:14px;
 }
 .field label{font-size:0.82rem; font-weight:500; margin-bottom:6px; display:block;}
 .field input[type="text"],
-.field input[type="email"]{
+.field input[type="email"],
+.field select{
   width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--line);
   background:var(--sand); font-family:'Work Sans',sans-serif; font-size:0.92rem; color:var(--ink);
 }
+.address-info-note{
+  background:var(--sand); border:1px solid var(--line); border-radius:10px;
+  padding:12px 14px; font-size:0.84rem; color:var(--forest); line-height:1.5;
+}
+
 .file-field{
   border:1px dashed var(--line); border-radius:10px; padding:16px; background:var(--sand);
 }

@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { sendBookingSubmission } from '../lib/sendBooking'
 import ImageLightbox from './ImageLightbox'
 
-export default function BookingForm({ therapistName, sessionType, idPrefix }) {
+export default function BookingForm({ therapistName, idPrefix }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [hostingOption, setHostingOption] = useState('cannot-host') // 'cannot-host' | 'can-host'
+  const [address, setAddress] = useState('')
   const [file, setFile] = useState(null)
   const [previewSrc, setPreviewSrc] = useState(null)
   const [submittedName, setSubmittedName] = useState('')
@@ -24,20 +26,37 @@ export default function BookingForm({ therapistName, sessionType, idPrefix }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!file) return
+
+    const sessionTypeLabel =
+      hostingOption === 'can-host' ? 'I can host — Out-call ($100)' : 'I cannot host — In-call ($65)'
+
+    const clientAddress =
+      hostingOption === 'can-host'
+        ? address
+        : 'Client cannot host. Meeting address will be sent to client email after payment verification.'
+
     setStatus('sending')
     setErrorMsg('')
     const currentName = name
     try {
-      await sendBookingSubmission({ name: currentName, email, file, therapistName, sessionType })
+      await sendBookingSubmission({
+        name: currentName,
+        email,
+        file,
+        therapistName,
+        sessionType: sessionTypeLabel,
+        address: clientAddress,
+      })
       setSubmittedName(currentName)
       setStatus('sent')
       setName('')
       setEmail('')
+      setAddress('')
       setFile(null)
       setPreviewSrc(null)
       e.target.reset()
 
-      // Reload page after 2.5 seconds to refresh to a completely clean state
+      // Reload page after 2.5 seconds
       setTimeout(() => {
         window.location.reload()
       }, 2500)
@@ -72,6 +91,37 @@ export default function BookingForm({ therapistName, sessionType, idPrefix }) {
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
+
+        <div className="field">
+          <label htmlFor={`${idPrefix}-hosting`}>Can you host?</label>
+          <select
+            id={`${idPrefix}-hosting`}
+            value={hostingOption}
+            onChange={(e) => setHostingOption(e.target.value)}
+          >
+            <option value="cannot-host">I cannot host — In-call ($65)</option>
+            <option value="can-host">I can host — Out-call ($100)</option>
+          </select>
+        </div>
+
+        {hostingOption === 'can-host' ? (
+          <div className="field">
+            <label htmlFor={`${idPrefix}-address`}>Your Address / Meeting Location</label>
+            <input
+              id={`${idPrefix}-address`}
+              type="text"
+              placeholder="Enter street address, city, apt/suite"
+              required
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+          </div>
+        ) : (
+          <div className="address-info-note">
+            📍 <strong>Meeting Location:</strong> Our meeting address will be sent to your email after your payment proof is verified.
+          </div>
+        )}
+
         <div className="field">
           <label htmlFor={`${idPrefix}-file`}>Proof of payment (screenshot)</label>
           <div className="file-field">
@@ -115,4 +165,3 @@ export default function BookingForm({ therapistName, sessionType, idPrefix }) {
     </>
   )
 }
-
