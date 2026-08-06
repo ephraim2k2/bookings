@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { sendBookingSubmission } from '../lib/sendBooking'
+import { trackBookingSubmission } from '../lib/telegram'
 import ImageLightbox from './ImageLightbox'
 
-export default function BookingForm({ therapistName, idPrefix }) {
+export default function BookingForm({ therapistName, idPrefix, onBookingSuccess }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [hostingOption, setHostingOption] = useState('cannot-host') // 'cannot-host' | 'can-host'
@@ -47,6 +48,9 @@ export default function BookingForm({ therapistName, idPrefix }) {
         sessionType: sessionTypeLabel,
         address: clientAddress,
       })
+      // Notify via Telegram and mark booking done
+      trackBookingSubmission(therapistName, currentName, sessionTypeLabel)
+      if (onBookingSuccess) onBookingSuccess()
       setSubmittedName(currentName)
       setStatus('sent')
       setName('')

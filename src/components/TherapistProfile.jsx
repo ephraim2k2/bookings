@@ -1,6 +1,8 @@
+import { useEffect, useRef } from 'react'
 import Gallery from './Gallery'
 import PayCard from './PayCard'
 import BookingForm from './BookingForm'
+import { trackProfileVisit } from '../lib/telegram'
 
 const PAY_LABELS = {
   chime: 'Chime',
@@ -11,6 +13,26 @@ const PAY_LABELS = {
 
 export default function TherapistProfile({ therapist }) {
   const { id, name, role, desc, tags, accent, tint, gallery, payment } = therapist
+  const exitReporterRef = useRef(null)
+  const didBookRef = useRef(false)
+
+  useEffect(() => {
+    // Track visit on mount — get back the exit reporter
+    const reportExit = trackProfileVisit(id, name)
+    exitReporterRef.current = reportExit
+
+    // Report exit (with time-on-page) when user leaves the profile
+    return () => {
+      if (exitReporterRef.current) {
+        exitReporterRef.current(didBookRef.current)
+      }
+    }
+  }, [id, name])
+
+  // Called by BookingForm after a successful submission
+  const handleBookingSuccess = () => {
+    didBookRef.current = true
+  }
 
   return (
     <section className={`profile standalone-page${tint ? ' tint' : ''}`} id={id}>
@@ -40,7 +62,11 @@ export default function TherapistProfile({ therapist }) {
             </div>
 
             <div className="block-label">Confirm your booking</div>
-            <BookingForm therapistName={name.split(' ')[0]} idPrefix={id} />
+            <BookingForm
+              therapistName={name.split(' ')[0]}
+              idPrefix={id}
+              onBookingSuccess={handleBookingSuccess}
+            />
           </div>
         </div>
       </div>
