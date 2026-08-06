@@ -5,6 +5,7 @@ import HomePage from './components/HomePage'
 import TherapistProfile from './components/TherapistProfile'
 import Footer from './components/Footer'
 import WhatsAppBtn from './components/WhatsAppBtn'
+import LiveChat from './components/LiveChat'
 import { therapists } from './data/therapists'
 
 function getRouteFromHash() {
@@ -74,6 +75,7 @@ function App() {
 
       <Footer />
       <WhatsAppBtn className="whatsapp-float" label="Contact support on WhatsApp" />
+      <LiveChat currentPage={selectedTherapist ? selectedTherapist.name : 'Home'} />
     </>
   )
 }
