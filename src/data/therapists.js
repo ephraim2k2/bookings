@@ -14,17 +14,17 @@ export const sessionRates = [
 
 export const therapists = [
   {
-    id: 'emily',
-    name: 'Emily Carter',
+    id: 'kate',
+    name: 'Kate Ashley',
     desc: 'Professional bodywork and massage sessions focused on relaxation and stress relief.',
     accent: '#71846A',
-    gallery: { main: '#DCE3D2', thumb1: '#CFDAC1', thumb2: '#E4EBD9' },
+    gallery: { main: '/kate1.jpeg', thumb1: '/kate2.jpeg', thumb2: '/kate3.jpeg' },
     sessions: sessionRates,
     payment: {
-      chime: '$EmilyCarter',
-      zelle: 'emily.carter@grovestone.co',
-      venmo: '@Emily-Carter',
-      btc: 'bc1q05c8e4sulcm90us0zcwyfaqxx4y9vfvczx2zg8',
+      chime: '$KateAshley',
+      zelle: 'kate.ashley@grovestone.co',
+      venmo: '@Kate-Ashley',
+      btc: 'bc1qts3ulkzefm5csrswydv98rcusyvaf74gr77an9',
     },
   },
   {
