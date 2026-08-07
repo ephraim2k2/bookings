@@ -15,11 +15,14 @@ export const sessionRates = [
 export const therapists = [
   {
     id: 'kate',
+    slug: 'v-7x9q2m',
+    accessCode: 'KATE88',
     name: 'Kate Ashley',
     desc: 'Professional bodywork and massage sessions focused on relaxation and stress relief.',
     accent: '#71846A',
     gallery: { main: '/kate1.jpeg', thumb1: '/kate2.jpeg', thumb2: '/kate3.jpeg' },
     sessions: sessionRates,
+    whatsapp: '13093151193',
     payment: {
       chime: '$KateAshley',
       zelle: 'kate.ashley@grovestone.co',
@@ -29,6 +32,8 @@ export const therapists = [
   },
   {
     id: 'sarah',
+    slug: 'v-4m8k3p',
+    accessCode: 'SARAH42',
     name: 'Sarah Mitchell',
     desc: 'Relaxing therapeutic sessions tailored to help you feel refreshed and balanced.',
     accent: '#B97B6D',
@@ -43,7 +48,26 @@ export const therapists = [
     },
   },
   {
+    id: 'katty',
+    slug: 'v-9d2z7w',
+    accessCode: 'KATTY91',
+    name: 'Katty Dave',
+    desc: 'Relaxing therapeutic sessions tailored to help you feel refreshed and balanced.',
+    accent: '#B97B6D',
+    tint: true,
+    gallery: { main: '/Sarah1.jpeg', thumb1: '/Sarah2.jpeg', thumb2: '/Sarah3.jpeg' },
+    sessions: sessionRates,
+    payment: {
+      chime: '$KattyDave',
+      zelle: 'katty.dave@grovestone.co',
+      venmo: '@Katty-Dave',
+      btc: 'bc1q05c8e4sulcm90us0zcwyfaqxx4y9vfvczx2zg8',
+    },
+  },
+  {
     id: 'rachel',
+    slug: 'v-3b7x9y',
+    accessCode: 'RACHEL15',
     name: 'Rachel Bennett',
     desc: 'College students girl seeking for FWB and creampie',
     accent: '#9AAE8A',

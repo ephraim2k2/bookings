@@ -383,25 +383,51 @@ footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:12
 .card-desc {
   color: var(--sage-dim); font-size: 0.9rem; margin-top: 8px; flex-grow: 1; line-height: 1.5;
 }
-.card-rates {
-  font-size: 0.85rem; font-weight: 600; color: var(--clay-dark); margin: 16px 0;
+/* ---------- PRIVATE PORTAL ---------- */
+.private-portal-card {
+  max-width: 520px;
+  margin: 40px auto 60px;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 36px 28px;
+  text-align: center;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.06);
 }
-.view-profile-btn {
-  display: inline-block; text-align: center; color: var(--cream); text-decoration: none;
-  padding: 12px 18px; border-radius: 12px; font-weight: 500; font-size: 0.9rem;
-  transition: opacity 0.2s ease;
+.private-portal-icon {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
 }
-.view-profile-btn:hover {
-  opacity: 0.9;
+.private-portal-card h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
-.back-link-btn {
-  background: transparent; border: 1px solid var(--line); color: var(--forest);
-  padding: 8px 16px; border-radius: 100px; font-size: 0.86rem; font-weight: 500;
-  cursor: pointer; font-family: 'Work Sans', sans-serif; margin-bottom: 24px;
-  transition: background-color 0.2s ease;
+.private-portal-card p {
+  color: var(--sage-dim);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin-bottom: 24px;
 }
-.back-link-btn:hover {
+.private-access-form {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.private-portal-note {
+  margin-top: 24px;
+  font-size: 0.78rem;
+  color: var(--sage-dim);
+}
+.nav-private-badge {
+  font-size: 0.78rem;
+  color: var(--forest);
   background: var(--sand);
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1px solid var(--line);
+  font-weight: 500;
 }
 
 /* ---------- LIVE CHAT ---------- */

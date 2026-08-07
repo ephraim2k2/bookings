@@ -58,11 +58,17 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const selectedTherapist = therapists.find((t) => t.id === currentRoute)
+  const cleanRoute = currentRoute.toLowerCase()
+  const selectedTherapist = therapists.find(
+    (t) =>
+      t.id.toLowerCase() === cleanRoute ||
+      t.slug.toLowerCase() === cleanRoute ||
+      t.accessCode?.toLowerCase() === cleanRoute
+  )
 
   return (
     <>
-      <Nav currentRoute={currentRoute} onNavigate={navigateTo} />
+      <Nav isIndividualPage={Boolean(selectedTherapist && currentRoute !== 'home')} />
 
       {currentRoute === 'home' || !selectedTherapist ? (
         <>
@@ -74,7 +80,12 @@ function App() {
       )}
 
       <Footer />
-      <WhatsAppBtn className="whatsapp-float" label="Contact support on WhatsApp" />
+      <WhatsAppBtn
+        className="whatsapp-float"
+        phone={selectedTherapist?.whatsapp || '14302939043'}
+        therapistName={selectedTherapist?.name?.split(' ')[0]}
+        label={selectedTherapist ? `WhatsApp ${selectedTherapist.name.split(' ')[0]}` : 'Contact support on WhatsApp'}
+      />
       <LiveChat currentPage={selectedTherapist ? selectedTherapist.name : 'Home'} />
     </>
   )

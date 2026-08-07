@@ -1,5 +1,14 @@
-export default function WhatsAppBtn({ label = 'Contact support on WhatsApp', className = '' }) {
-  const whatsappUrl = 'https://wa.me/14302939043?text=Hello%2C%20I%20have%20a%20question%20about%20booking%20a%20session'
+export default function WhatsAppBtn({
+  phone = '14302939043',
+  label = 'Contact support on WhatsApp',
+  className = '',
+  therapistName,
+}) {
+  const cleanPhone = phone.replace(/[^0-9]/g, '')
+  const text = therapistName
+    ? `Hello ${therapistName}, I have a question about booking a session with you`
+    : 'Hello, I have a question about booking a session'
+  const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`
 
   return (
     <a

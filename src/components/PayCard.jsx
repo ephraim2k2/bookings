@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import PaymentIcon from './PaymentIcon'
 
-export default function PayCard({ type, label, value, accent }) {
+export default function PayCard({ type, label, value, accent, whatsappPhone = '14302939043' }) {
   const [copied, setCopied] = useState(false)
 
   const isBtc = type === 'btc'
-  const whatsappUrl = `https://wa.me/14302939043?text=Hello%2C%20I%20would%20like%20to%20request%20payment%20details%20for%20${encodeURIComponent(
+  const cleanPhone = String(whatsappPhone).replace(/[^0-9]/g, '')
+  const whatsappUrl = `https://wa.me/${cleanPhone}?text=Hello%2C%20I%20would%20like%20to%20request%20payment%20details%20for%20${encodeURIComponent(
     label
   )}`
 
