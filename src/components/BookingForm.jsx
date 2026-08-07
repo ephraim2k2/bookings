@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { sendBookingSubmission } from '../lib/sendBooking'
 import { trackBookingSubmission } from '../lib/telegram'
+import { sessionRates } from '../data/therapists'
 import ImageLightbox from './ImageLightbox'
 
 export default function BookingForm({ therapistName, idPrefix, onBookingSuccess }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [hostingOption, setHostingOption] = useState('cannot-host') // 'cannot-host' | 'can-host'
+  const [selectedSessionId, setSelectedSessionId] = useState(sessionRates[0]?.id || '1hr')
+  const [hostingOption, setHostingOption] = useState('in-call') // 'in-call' | 'out-call'
   const [address, setAddress] = useState('')
   const [file, setFile] = useState(null)
   const [previewSrc, setPreviewSrc] = useState(null)
@@ -14,6 +16,14 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
   const [showLightbox, setShowLightbox] = useState(false)
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
   const [errorMsg, setErrorMsg] = useState('')
+
+  const selectedSession = sessionRates.find((s) => s.id === selectedSessionId) || sessionRates[0]
+  const isOutCall = hostingOption === 'out-call'
+  const isThreesome = selectedSession?.id === 'threesome'
+  const balanceDue =
+    selectedSession.totalNum > 0 && selectedSession.depositNum > 0
+      ? selectedSession.totalNum - selectedSession.depositNum
+      : null
 
   const handleFileChange = (e) => {
     const selected = e.target.files && e.target.files[0]
@@ -28,13 +38,13 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
     e.preventDefault()
     if (!file) return
 
-    const sessionTypeLabel =
-      hostingOption === 'can-host' ? 'I can host — Out-call ($100)' : 'I cannot host — In-call ($65)'
+    const sessionSummary = `${selectedSession.time} — Total: ${selectedSession.amount} (Deposit: ${selectedSession.deposit}) · ${isOutCall ? 'Out-call' : 'In-call'}`
 
-    const clientAddress =
-      hostingOption === 'can-host'
-        ? address
-        : 'Client cannot host. Meeting address will be sent to client email after payment verification.'
+    const clientAddress = isOutCall
+      ? address
+      : isThreesome
+        ? address || 'Threesome package — venue/location to be confirmed via email.'
+        : 'In-call session. Meeting location address will be sent to client email upon deposit confirmation.'
 
     setStatus('sending')
     setErrorMsg('')
@@ -45,11 +55,11 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
         email,
         file,
         therapistName,
-        sessionType: sessionTypeLabel,
+        sessionType: sessionSummary,
         address: clientAddress,
       })
       // Notify via Telegram and mark booking done
-      trackBookingSubmission(therapistName, currentName, sessionTypeLabel)
+      trackBookingSubmission(therapistName, currentName, sessionSummary)
       if (onBookingSuccess) onBookingSuccess()
       setSubmittedName(currentName)
       setStatus('sent')
@@ -73,6 +83,15 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
   return (
     <>
       <form className="proof-form" onSubmit={handleSubmit}>
+        {/* Deposit Policy Notice */}
+        <div className="deposit-policy-banner">
+          <div className="deposit-banner-icon">🔒</div>
+          <div className="deposit-banner-text">
+            <strong>Meetup Confirmed Upon Deposit:</strong> Pay the required deposit now to secure your session.
+            The remaining balance is paid upon meetup.
+          </div>
+        </div>
+
         <div className="field">
           <label htmlFor={`${idPrefix}-name`}>Full name</label>
           <input
@@ -96,19 +115,56 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
           />
         </div>
 
+        {/* Time / Duration selector */}
         <div className="field">
-          <label htmlFor={`${idPrefix}-hosting`}>Can you host?</label>
+          <label htmlFor={`${idPrefix}-session`}>Select Meetup Duration & Deposit</label>
+          <select
+            id={`${idPrefix}-session`}
+            value={selectedSessionId}
+            onChange={(e) => setSelectedSessionId(e.target.value)}
+          >
+            {sessionRates.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.time} — Total: {s.amount} · Deposit: {s.deposit}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Dynamic Deposit Breakdown Box */}
+        <div className="deposit-summary-box">
+          <div className="deposit-summary-row">
+            <span className="summary-label">Total Meetup Amount:</span>
+            <span className="summary-val">{selectedSession.amount}</span>
+          </div>
+          <div className="deposit-summary-row highlight">
+            <span className="summary-label">
+              <strong>Deposit Due Now to Confirm:</strong>
+            </span>
+            <span className="summary-val deposit-tag">{selectedSession.deposit}</span>
+          </div>
+          {balanceDue !== null && (
+            <div className="deposit-summary-row subtle">
+              <span className="summary-label">Remaining Balance at Meetup:</span>
+              <span className="summary-val">${balanceDue}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Hosting / Location Preference */}
+        <div className="field">
+          <label htmlFor={`${idPrefix}-hosting`}>Can you host / Location preference?</label>
           <select
             id={`${idPrefix}-hosting`}
             value={hostingOption}
             onChange={(e) => setHostingOption(e.target.value)}
           >
-            <option value="cannot-host">I cannot host — In-call ($65)</option>
-            <option value="can-host">I can host — Out-call ($100)</option>
+            <option value="in-call">I cannot host — In-call (Meeting location provided after deposit)</option>
+            <option value="out-call">I can host — Out-call (Therapist travels to your address)</option>
           </select>
         </div>
 
-        {hostingOption === 'can-host' ? (
+        {isOutCall ? (
           <div className="field">
             <label htmlFor={`${idPrefix}-address`}>Your Address / Meeting Location</label>
             <input
@@ -120,14 +176,26 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
               onChange={(e) => setAddress(e.target.value)}
             />
           </div>
+        ) : isThreesome ? (
+          <div className="field">
+            <label htmlFor={`${idPrefix}-address`}>Preferred Venue/Location (Optional)</label>
+            <input
+              id={`${idPrefix}-address`}
+              type="text"
+              placeholder="Enter location or leave blank for arranged venue"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+          </div>
         ) : (
           <div className="address-info-note">
-            📍 <strong>Meeting Location:</strong> Our meeting address will be sent to your email after your payment proof is verified.
+            📍 <strong>Meeting Location:</strong> Our private meeting address will be sent to your email immediately
+            after your deposit payment is verified.
           </div>
         )}
 
         <div className="field">
-          <label htmlFor={`${idPrefix}-file`}>Proof of payment (screenshot)</label>
+          <label htmlFor={`${idPrefix}-file`}>Proof of deposit payment (screenshot)</label>
           <div className="file-field">
             <input
               id={`${idPrefix}-file`}
@@ -140,26 +208,30 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
               <img
                 className="file-preview"
                 src={previewSrc}
-                alt="Payment proof preview"
+                alt="Deposit proof preview"
                 onClick={() => setShowLightbox(true)}
                 title="Click to expand preview"
               />
             )}
           </div>
         </div>
+
         <button type="submit" className="submit-btn" disabled={status === 'sending' || status === 'sent'}>
-          {status === 'sending' ? 'Sending…' : status === 'sent' ? 'Sent ✓' : 'Submit booking'}
+          {status === 'sending' ? 'Verifying deposit…' : status === 'sent' ? 'Deposit Submitted ✓' : 'Confirm Meetup with Deposit'}
         </button>
-        <div className="form-note">We'll confirm your slot by email once we verify payment.</div>
+        <div className="form-note">
+          Your meetup slot is locked and confirmed as soon as your deposit proof is verified.
+        </div>
+
         {status === 'sent' && (
           <div className="confirm-msg">
-            Thanks {submittedName || 'there'}! We've received your payment proof for {therapistName} and
-            will confirm your time slot by email shortly.
+            Thanks {submittedName || 'there'}! We have received your deposit proof for {therapistName}. Your meetup is
+            being confirmed and details will be sent to your email shortly.
           </div>
         )}
         {status === 'error' && (
           <div className="confirm-msg" style={{ background: 'var(--clay-dark)' }}>
-            Something went wrong sending your booking ({errorMsg}). Please try again.
+            Something went wrong sending your deposit ({errorMsg}). Please try again.
           </div>
         )}
       </form>

@@ -148,7 +148,7 @@ export default function LiveChat({ currentPage }) {
           </svg>
         ) : (
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
           </svg>
         )}
         {hasUnread && !isOpen && <span className="livechat-badge" />}
@@ -161,7 +161,7 @@ export default function LiveChat({ currentPage }) {
           <div className="livechat-header">
             <div className="livechat-avatar">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
               </svg>
             </div>
             <div className="livechat-header-text">
@@ -203,7 +203,7 @@ export default function LiveChat({ currentPage }) {
               id="livechat-send"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
               </svg>
             </button>
           </div>

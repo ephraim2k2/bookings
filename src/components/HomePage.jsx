@@ -18,7 +18,7 @@ export default function HomePage({ onSelectTherapist }) {
             <div className="card-body">
               <h3 className="card-name">{t.name}</h3>
               <p className="card-desc">{t.desc}</p>
-              <div className="card-rates">In-call $65 · Out-call $100</div>
+              <div className="card-rates">Rates from $50 · $25 Deposit to Confirm Meetup</div>
               <a
                 href={`#/${t.id}`}
                 onClick={(e) => {

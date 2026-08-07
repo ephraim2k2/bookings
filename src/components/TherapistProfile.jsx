@@ -54,14 +54,14 @@ export default function TherapistProfile({ therapist }) {
               </div>
             )}
 
-            <div className="block-label">Pay for {name.split(' ')[0]}</div>
+            <div className="block-label">Pay Deposit for {name.split(' ')[0]}</div>
             <div className="pay-grid-mini">
               {Object.entries(payment).map(([type, value]) => (
                 <PayCard key={type} type={type} label={PAY_LABELS[type]} value={value} accent={accent} />
               ))}
             </div>
 
-            <div className="block-label">Confirm your booking</div>
+            <div className="block-label">Confirm Meetup with Deposit</div>
             <BookingForm
               therapistName={name.split(' ')[0]}
               idPrefix={id}

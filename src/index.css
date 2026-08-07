@@ -160,6 +160,118 @@ nav .wrap{display:flex; align-items:center; justify-content:space-between; heigh
   padding:12px 14px; font-size:0.84rem; color:var(--forest); line-height:1.5;
 }
 
+/* ---------- MEETUP RATES & DEPOSIT TABLE ---------- */
+.meetup-table-card {
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.meetup-table-header {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  padding: 12px 18px;
+  background: var(--sand);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--clay-dark);
+  border-bottom: 1px solid var(--line);
+}
+.meetup-table-body {
+  display: flex;
+  flex-direction: column;
+}
+.meetup-table-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  padding: 10px 18px;
+  font-size: 0.88rem;
+  border-bottom: 1px solid rgba(34,41,31,0.06);
+  align-items: center;
+}
+.meetup-table-row:nth-child(even) {
+  background: rgba(241, 234, 220, 0.35);
+}
+.meetup-table-row:last-child {
+  border-bottom: none;
+}
+.meetup-col-time {
+  font-weight: 600;
+  color: var(--ink);
+}
+.meetup-col-amt {
+  color: var(--sage-dim);
+  font-weight: 500;
+}
+.meetup-col-dep strong {
+  color: var(--forest);
+  background: var(--sand);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.84rem;
+}
+.meetup-table-footer {
+  padding: 12px 18px;
+  background: var(--sand);
+  font-size: 0.82rem;
+  color: var(--forest);
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+
+/* ---------- DEPOSIT POLICY BANNER & BREAKDOWN ---------- */
+.deposit-policy-banner {
+  background: #EAF4EC;
+  border: 1px solid #BFE0C5;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.86rem;
+  color: #1E4620;
+  line-height: 1.45;
+}
+.deposit-banner-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.deposit-summary-box {
+  background: var(--sand);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.deposit-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.88rem;
+}
+.deposit-summary-row.highlight {
+  padding: 8px 0;
+  border-top: 1px dashed var(--line);
+  border-bottom: 1px dashed var(--line);
+}
+.deposit-tag {
+  background: var(--forest);
+  color: var(--cream);
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+.deposit-summary-row.subtle {
+  font-size: 0.82rem;
+  color: var(--sage-dim);
+}
+
 .file-field{
   border:1px dashed var(--line); border-radius:10px; padding:16px; background:var(--sand);
 }
