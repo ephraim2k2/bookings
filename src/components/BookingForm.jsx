@@ -38,13 +38,11 @@ function formatPrettyDate(dateStr) {
 
 export default function BookingForm({ therapistName, idPrefix, onBookingSuccess }) {
   const todayStr = useMemo(() => getFormattedDate(0), [])
-  const tomorrowStr = useMemo(() => getFormattedDate(1), [])
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [selectedSessionId, setSelectedSessionId] = useState(sessionRates[0]?.id || '1hr')
-  const [dateMode, setDateMode] = useState('today') // 'today' | 'tomorrow' | 'custom'
-  const [customDate, setCustomDate] = useState(todayStr)
+  const [selectedDate, setSelectedDate] = useState(todayStr)
   const [timeSlot, setTimeSlot] = useState('2:00 PM')
   const [customTime, setCustomTime] = useState('')
   const [specialRequests, setSpecialRequests] = useState('')
@@ -66,13 +64,7 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
       : null
 
   // Effective appointment date & time for display and submit
-  const effectiveDate =
-    dateMode === 'today'
-      ? `Today (${formatPrettyDate(todayStr)})`
-      : dateMode === 'tomorrow'
-        ? `Tomorrow (${formatPrettyDate(tomorrowStr)})`
-        : formatPrettyDate(customDate) || customDate
-
+  const effectiveDate = formatPrettyDate(selectedDate) || selectedDate
   const effectiveTime = timeSlot === 'Custom Time' ? customTime || 'Custom' : timeSlot
 
   const handleFileChange = (e) => {
@@ -207,40 +199,16 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
 
         {/* Date Selector */}
         <div className="field">
-          <label>Preferred Date</label>
-          <div className="date-chip-group">
-            <button
-              type="button"
-              className={`date-chip ${dateMode === 'today' ? 'active' : ''}`}
-              onClick={() => setDateMode('today')}
-            >
-              📅 Today ({formatPrettyDate(todayStr)})
-            </button>
-            <button
-              type="button"
-              className={`date-chip ${dateMode === 'tomorrow' ? 'active' : ''}`}
-              onClick={() => setDateMode('tomorrow')}
-            >
-              🗓️ Tomorrow ({formatPrettyDate(tomorrowStr)})
-            </button>
-            <button
-              type="button"
-              className={`date-chip ${dateMode === 'custom' ? 'active' : ''}`}
-              onClick={() => setDateMode('custom')}
-            >
-              📆 Select Date
-            </button>
-          </div>
-          {dateMode === 'custom' && (
-            <input
-              type="date"
-              min={todayStr}
-              value={customDate}
-              onChange={(e) => setCustomDate(e.target.value)}
-              className="custom-date-input"
-              required
-            />
-          )}
+          <label htmlFor={`${idPrefix}-date`}>Select Date</label>
+          <input
+            id={`${idPrefix}-date`}
+            type="date"
+            min={todayStr}
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="custom-date-input"
+            required
+          />
         </div>
 
         {/* Time Selector */}
