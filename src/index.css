@@ -239,37 +239,205 @@ nav .wrap{display:flex; align-items:center; justify-content:space-between; heigh
   font-size: 1.2rem;
   flex-shrink: 0;
 }
-.deposit-summary-box {
+
+.field-group-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--clay-dark);
+  margin-top: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.optional-tag {
+  font-size: 0.76rem;
+  font-weight: 400;
+  color: var(--sage-dim);
+}
+
+/* Date Selection Chips */
+.date-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+.date-chip {
   background: var(--sand);
   border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 14px 16px;
+  color: var(--ink);
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.date-chip:hover {
+  background: rgba(34, 41, 31, 0.08);
+}
+.date-chip.active {
+  background: var(--forest);
+  color: var(--cream);
+  border-color: var(--forest);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(30, 43, 34, 0.2);
+}
+
+.custom-date-input,
+.custom-time-input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--sand);
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.88rem;
+  color: var(--ink);
+}
+
+.notes-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--sand);
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.88rem;
+  color: var(--ink);
+  resize: vertical;
+  min-height: 54px;
+  line-height: 1.45;
+}
+.notes-textarea:focus,
+.custom-date-input:focus,
+.custom-time-input:focus {
+  outline: none;
+  border-color: var(--sage-dim);
+  background: #ffffff;
+}
+
+/* ---------- LIVE REAL-TIME BOOKING SUMMARY RECEIPT ---------- */
+.booking-summary-receipt {
+  background: var(--sand);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+}
+.receipt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.receipt-title {
+  font-family: 'Fraunces', serif;
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: var(--forest);
+}
+.receipt-badge {
+  background: #25D366;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: 100px;
+  text-transform: uppercase;
+}
+.receipt-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.86rem;
+}
+.receipt-row .r-label {
+  color: var(--sage-dim);
+  font-weight: 500;
+}
+.receipt-row .r-val {
+  color: var(--ink);
+  font-weight: 600;
+  text-align: right;
+}
+.receipt-row .font-bold {
+  font-weight: 700;
+  color: var(--forest);
+}
+.receipt-row.notes-preview .r-val {
+  max-width: 60%;
+  font-size: 0.8rem;
+  color: var(--sage-dim);
+}
+.receipt-divider {
+  border-top: 1px dashed var(--line);
+  margin: 2px 0;
+}
+.receipt-financials {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-.deposit-summary-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.receipt-financials .total-amount {
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: var(--forest);
+}
+.receipt-row.highlight-deposit {
+  background: var(--cream);
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  margin: 2px 0;
+}
+.receipt-row.highlight-deposit .r-label {
+  color: var(--forest);
   font-size: 0.88rem;
 }
-.deposit-summary-row.highlight {
-  padding: 8px 0;
-  border-top: 1px dashed var(--line);
-  border-bottom: 1px dashed var(--line);
-}
-.deposit-tag {
+.deposit-pill {
   background: var(--forest);
   color: var(--cream);
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 8px;
-  font-size: 0.92rem;
+  font-size: 0.94rem;
   font-weight: 700;
+  letter-spacing: 0.02em;
 }
-.deposit-summary-row.subtle {
+.receipt-row.subtle-balance {
   font-size: 0.82rem;
   color: var(--sage-dim);
+}
+.receipt-row.subtle-balance .r-val {
+  color: var(--forest);
+  font-weight: 600;
+}
+.receipt-footer {
+  font-size: 0.74rem;
+  color: var(--sage-dim);
+  line-height: 1.4;
+  text-align: center;
+  border-top: 1px solid rgba(34, 41, 31, 0.08);
+  padding-top: 8px;
 }
 
 .file-field{
@@ -336,12 +504,15 @@ footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:12
 
 .whatsapp-float {
   position: fixed; bottom: 24px; right: 24px; z-index: 90;
-  padding: 12px 20px; font-size: 0.9rem; font-weight: 600;
+  width: 52px; height: 52px; padding: 0;
+  border-radius: 50%; font-size: 0.9rem; font-weight: 600;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  display: flex; align-items: center; justify-content: center;
 }
+.whatsapp-float span { display: none; }
+.whatsapp-float svg { width: 24px; height: 24px; }
 @media(max-width:600px){
-  .whatsapp-float span { display: none; }
-  .whatsapp-float { padding: 14px; border-radius: 50%; bottom: 16px; right: 16px; }
+  .whatsapp-float { bottom: 16px; right: 16px; }
 }
 
 /* ---------- MULTI-PAGE DIRECTORY & ROUTING ---------- */

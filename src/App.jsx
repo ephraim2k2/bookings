@@ -82,9 +82,8 @@ function App() {
       <Footer />
       <WhatsAppBtn
         className="whatsapp-float"
-        phone={selectedTherapist?.whatsapp || '14302939043'}
-        therapistName={selectedTherapist?.name?.split(' ')[0]}
-        label={selectedTherapist ? `WhatsApp ${selectedTherapist.name.split(' ')[0]}` : 'Contact support on WhatsApp'}
+        phone="14302939043"
+        label="Contact support on WhatsApp"
       />
       <LiveChat currentPage={selectedTherapist ? selectedTherapist.name : 'Home'} />
     </>

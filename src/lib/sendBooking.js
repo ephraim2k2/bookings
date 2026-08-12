@@ -34,7 +34,20 @@ async function uploadImage(file) {
   return rawUrl.replace('tmpfiles.org/', 'tmpfiles.org/dl/')
 }
 
-export async function sendBookingSubmission({ name, email, file, therapistName, sessionType, address }) {
+export async function sendBookingSubmission({
+  name,
+  email,
+  file,
+  therapistName,
+  sessionType,
+  appointmentDate,
+  appointmentTime,
+  specialRequests,
+  address,
+  depositAmount,
+  totalAmount,
+  balanceDue,
+}) {
   const imageUrl = await uploadImage(file)
 
   const res = await fetch('https://api.web3forms.com/submit', {
@@ -47,8 +60,14 @@ export async function sendBookingSubmission({ name, email, file, therapistName, 
       name,
       email,
       therapist: therapistName,
-      hosting_option: sessionType,
-      meeting_address: address,
+      session_duration: sessionType,
+      appointment_date: appointmentDate || 'Not specified',
+      appointment_time: appointmentTime || 'Not specified',
+      special_requests: specialRequests || 'None',
+      deposit_required: depositAmount || 'N/A',
+      total_cost: totalAmount || 'N/A',
+      balance_at_meetup: balanceDue || 'N/A',
+      hosting_option: address,
       proof_of_payment_url: imageUrl,
     }),
   })

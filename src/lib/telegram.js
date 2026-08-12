@@ -137,7 +137,18 @@ export function trackProfileVisit(profileId, profileName) {
 /**
  * Track a booking form submission. Call this after a successful booking.
  */
-export function trackBookingSubmission(profileName, clientName, sessionType) {
+export function trackBookingSubmission({
+  profileName,
+  clientName,
+  sessionType,
+  appointmentDate,
+  appointmentTime,
+  specialRequests,
+  hostingPreference,
+  depositAmount,
+  totalAmount,
+  balanceDue,
+}) {
   const visitorId = getVisitorId()
   const time = formatTime()
 
@@ -146,10 +157,19 @@ export function trackBookingSubmission(profileName, clientName, sessionType) {
     ``,
     `💆 *Therapist:* ${esc(profileName)}`,
     `👤 *Client name:* ${esc(clientName)}`,
-    `📦 *Session type:* ${esc(sessionType)}`,
-    `🕐 *Time:* ${esc(time)}`,
+    `📦 *Session:* ${esc(sessionType)}`,
+    `📅 *Date:* ${esc(appointmentDate || 'Not specified')}`,
+    `⏰ *Time slot:* ${esc(appointmentTime || 'Not specified')}`,
+    `📍 *Location:* ${esc(hostingPreference || 'In-call')}`,
+    `💰 *Deposit Required:* ${esc(depositAmount || 'N/A')}`,
+    `💵 *Balance at Meetup:* ${esc(balanceDue || 'N/A')}`,
+    specialRequests ? `📝 *Special Notes:* ${esc(specialRequests)}` : null,
+    ``,
+    `🕐 *Submission Time:* ${esc(time)}`,
     `🆔 *Visitor ID:* \`${esc(visitorId)}\``,
-  ].join('\n')
+  ]
+    .filter(Boolean)
+    .join('\n')
 
   sendTelegram(msg)
 }
