@@ -17,11 +17,8 @@ export default function TherapistProfile({ therapist }) {
   const didBookRef = useRef(false)
 
   useEffect(() => {
-    // Track visit on mount — get back the exit reporter
     const reportExit = trackProfileVisit(id, name)
     exitReporterRef.current = reportExit
-
-    // Report exit (with time-on-page) when user leaves the profile
     return () => {
       if (exitReporterRef.current) {
         exitReporterRef.current(didBookRef.current)
@@ -29,7 +26,6 @@ export default function TherapistProfile({ therapist }) {
     }
   }, [id, name])
 
-  // Called by BookingForm after a successful submission
   const handleBookingSuccess = () => {
     didBookRef.current = true
   }
@@ -47,14 +43,12 @@ export default function TherapistProfile({ therapist }) {
             {tags && tags.length > 0 && (
               <div className="tags">
                 {tags.map((tag) => (
-                  <span className="tag" key={tag}>
-                    {tag}
-                  </span>
+                  <span className="tag" key={tag}>{tag}</span>
                 ))}
               </div>
             )}
 
-            <div className="block-label">Pay Deposit for {name.split(' ')[0]}</div>
+            <div className="block-label">Send Deposit to {name.split(' ')[0]}</div>
             <div className="pay-grid-mini">
               {Object.entries(payment).map(([type, value]) => (
                 <PayCard
@@ -68,7 +62,7 @@ export default function TherapistProfile({ therapist }) {
               ))}
             </div>
 
-            <div className="block-label">Confirm Meetup with Deposit</div>
+            <div className="block-label">Complete Your Booking</div>
             <BookingForm
               therapistName={name.split(' ')[0]}
               idPrefix={id}

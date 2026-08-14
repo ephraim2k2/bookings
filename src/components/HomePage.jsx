@@ -28,42 +28,53 @@ export default function HomePage({ onSelectTherapist, onJoinProvider }) {
   return (
     <div className="wrap home-directory">
       <div className="private-portal-card">
-        <div className="private-portal-icon">🔒</div>
+        {/* Icon */}
+        <span className="private-portal-icon">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#C97C6D', display: 'inline-block' }}>
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </span>
+
         <h2>Private Booking Portal</h2>
         <p>
-          Welcome to Grove &amp; Stone. Our services and profiles are private and accessible exclusively
-          via your direct invitation link or private access code.
+          Welcome to Grove &amp; Stone. Profiles are accessible exclusively
+          via your private invitation link or access code.
         </p>
 
         <form className="private-access-form" onSubmit={handleUnlock}>
           <div className="field">
-            <label htmlFor="portal-code">Enter Your Invitation / Access Code</label>
+            <label htmlFor="portal-code">Access Code or Invitation Link</label>
             <input
               id="portal-code"
               type="text"
-              placeholder="e.g. KATE88 or your invite link"
+              placeholder="e.g. KATE88"
               value={code}
               onChange={(e) => {
                 setCode(e.target.value)
                 setError(false)
               }}
               required
+              style={{ marginTop: 0 }}
             />
           </div>
-          <button type="submit" className="submit-btn" style={{ width: '100%', marginTop: '6px' }}>
+          <button type="submit" className="submit-btn" style={{ width: '100%', marginTop: '4px' }}>
             Access Profile →
           </button>
         </form>
 
         {error && (
-          <div className="confirm-msg" style={{ background: 'var(--clay-dark)', marginTop: '14px' }}>
-            Invalid access code. Please verify your invitation code or use your direct private link.
+          <div
+            className="confirm-msg"
+            style={{ marginTop: '14px', textAlign: 'center' }}
+          >
+            Invalid code. Please check your invitation and try again.
           </div>
         )}
 
-        <div className="private-portal-note">
-          Please contact support via live chat if you need assistance with your booking link.
-        </div>
+        <p className="private-portal-note">
+          Need help? Contact support via the live chat below.
+        </p>
 
         {/* Provider Sign-up Prompt */}
         <div className="provider-join-banner">
@@ -77,7 +88,7 @@ export default function HomePage({ onSelectTherapist, onJoinProvider }) {
               className="provider-join-btn"
               onClick={onJoinProvider}
             >
-              Join as a Therapist →
+              Join as a Provider →
             </button>
           )}
         </div>

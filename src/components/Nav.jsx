@@ -8,11 +8,13 @@ export default function Nav({ isIndividualPage, onNavigate }) {
           onClick={() => onNavigate && onNavigate('home')}
         >
           <svg className="logo-mark" viewBox="0 0 26 26" fill="none">
-            <circle cx="13" cy="13" r="12" stroke="#B97B6D" strokeWidth="1.4" />
+            <circle cx="13" cy="13" r="12" stroke="#C97C6D" strokeWidth="1.2" />
+            <circle cx="13" cy="13" r="5.5" stroke="#C97C6D" strokeWidth="1" strokeDasharray="2 2" />
             <path
-              d="M8 13c1.5-3 3.5-4.5 5-4.5s3.5 1.5 5 4.5c-1.5 3-3.5 4.5-5 4.5s-3.5-1.5-5-4.5z"
-              stroke="#1E2B22"
-              strokeWidth="1.2"
+              d="M13 4 C10 8, 7 10.5, 7 13 C7 16.3 9.7 19 13 19 C16.3 19 19 16.3 19 13 C19 10.5 16 8 13 4Z"
+              fill="rgba(201,124,109,0.15)"
+              stroke="#C97C6D"
+              strokeWidth="0.8"
             />
           </svg>
           Grove &amp; Stone
@@ -24,12 +26,12 @@ export default function Nav({ isIndividualPage, onNavigate }) {
               className="nav-provider-signup-btn"
               onClick={() => onNavigate('therapist-signup')}
             >
-              ✨ Join as Provider
+              ✦ Join as Provider
             </button>
           )}
           {!isIndividualPage && (
             <div className="nav-private-badge">
-              <span>🔒 Private Portal</span>
+              <span>🔒 Private</span>
             </div>
           )}
         </div>
