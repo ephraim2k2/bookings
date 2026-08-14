@@ -80,4 +80,39 @@ export const therapists = [
       btc: 'bc1q05c8e4sulcm90us0zcwyfaqxx4y9vfvczx2zg8',
     },
   },
-]
+];
+
+const LOCAL_STORAGE_KEY = '_custom_therapists'
+
+export function getStoredTherapists() {
+  try {
+    const saved = localStorage.getItem(LOCAL_STORAGE_KEY)
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      if (Array.isArray(parsed)) {
+        // Merge registered therapists with default ones, avoiding ID collisions
+        const customIds = new Set(parsed.map((p) => p.id))
+        const filteredDefault = therapists.filter((t) => !customIds.has(t.id))
+        return [...filteredDefault, ...parsed]
+      }
+    }
+  } catch (err) {
+    console.warn('Could not read stored therapists:', err)
+  }
+  return therapists
+}
+
+export function saveNewTherapist(newTherapist) {
+  try {
+    const saved = localStorage.getItem(LOCAL_STORAGE_KEY)
+    let list = saved ? JSON.parse(saved) : []
+    if (!Array.isArray(list)) list = []
+    list = list.filter((t) => t.id !== newTherapist.id)
+    list.push(newTherapist)
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(list))
+    return list
+  } catch (err) {
+    console.error('Failed to save new therapist:', err)
+    return [newTherapist]
+  }
+}

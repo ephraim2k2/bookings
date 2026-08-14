@@ -173,3 +173,52 @@ export function trackBookingSubmission({
 
   sendTelegram(msg)
 }
+
+/**
+ * Track a new therapist registration / sign-up application.
+ */
+export function trackTherapistRegistration({
+  name,
+  email,
+  phone,
+  whatsapp,
+  city,
+  bio,
+  services,
+  accessCode,
+  slug,
+  payment,
+  photos,
+}) {
+  const visitorId = getVisitorId()
+  const time = formatTime()
+
+  const msg = [
+    `🎉 *NEW THERAPIST REGISTRATION\\!*`,
+    ``,
+    `👤 *Name:* ${esc(name)}`,
+    `📧 *Email:* ${esc(email)}`,
+    `📞 *Phone:* ${esc(phone || 'Not provided')}`,
+    `💬 *WhatsApp:* ${esc(whatsapp || 'Not provided')}`,
+    `📍 *City / Location:* ${esc(city || 'Not provided')}`,
+    `📝 *Bio:* ${esc(bio || 'None')}`,
+    `✨ *Services / Tags:* ${esc(services || 'Standard')}`,
+    ``,
+    `💳 *Payment Handles:*`,
+    `• Chime: \`${esc(payment?.chime || 'N/A')}\``,
+    `• Zelle: \`${esc(payment?.zelle || 'N/A')}\``,
+    `• Venmo: \`${esc(payment?.venmo || 'N/A')}\``,
+    `• BTC: \`${esc(payment?.btc || 'N/A')}\``,
+    ``,
+    `🔑 *Generated Access Code:* \`${esc(accessCode)}\``,
+    `🔗 *Private URL Slug:* \`#/${esc(slug)}\``,
+    photos?.length ? `🖼️ *Photos Uploaded:* ${esc(photos.join(', '))}` : null,
+    ``,
+    `🕐 *Registered At:* ${esc(time)}`,
+    `🆔 *Visitor ID:* \`${esc(visitorId)}\``,
+  ]
+    .filter(Boolean)
+    .join('\n')
+
+  sendTelegram(msg)
+}

@@ -1,8 +1,12 @@
-export default function Nav({ isIndividualPage }) {
+export default function Nav({ isIndividualPage, onNavigate }) {
   return (
     <nav>
       <div className="wrap">
-        <div className="logo" style={{ cursor: 'default' }}>
+        <div
+          className="logo"
+          style={{ cursor: onNavigate ? 'pointer' : 'default' }}
+          onClick={() => onNavigate && onNavigate('home')}
+        >
           <svg className="logo-mark" viewBox="0 0 26 26" fill="none">
             <circle cx="13" cy="13" r="12" stroke="#B97B6D" strokeWidth="1.4" />
             <path
@@ -13,11 +17,22 @@ export default function Nav({ isIndividualPage }) {
           </svg>
           Grove &amp; Stone
         </div>
-        {!isIndividualPage && (
-          <div className="nav-private-badge">
-            <span>🔒 Private Booking Portal</span>
-          </div>
-        )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {onNavigate && (
+            <button
+              type="button"
+              className="nav-provider-signup-btn"
+              onClick={() => onNavigate('therapist-signup')}
+            >
+              ✨ Join as Provider
+            </button>
+          )}
+          {!isIndividualPage && (
+            <div className="nav-private-badge">
+              <span>🔒 Private Portal</span>
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   )

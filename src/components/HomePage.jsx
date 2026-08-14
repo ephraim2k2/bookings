@@ -1,14 +1,15 @@
 import { useState } from 'react'
-import { therapists } from '../data/therapists'
+import { getStoredTherapists } from '../data/therapists'
 
-export default function HomePage({ onSelectTherapist }) {
+export default function HomePage({ onSelectTherapist, onJoinProvider }) {
   const [code, setCode] = useState('')
   const [error, setError] = useState(false)
 
   const handleUnlock = (e) => {
     e.preventDefault()
     const clean = code.trim().toLowerCase()
-    const match = therapists.find(
+    const allTherapists = getStoredTherapists()
+    const match = allTherapists.find(
       (t) =>
         t.id.toLowerCase() === clean ||
         t.slug.toLowerCase() === clean ||
@@ -62,6 +63,23 @@ export default function HomePage({ onSelectTherapist }) {
 
         <div className="private-portal-note">
           Please contact support via live chat if you need assistance with your booking link.
+        </div>
+
+        {/* Provider Sign-up Prompt */}
+        <div className="provider-join-banner">
+          <div className="provider-join-text">
+            <strong>Are you an independent provider?</strong>
+            <span>Set up your private booking portal and accept client appointments.</span>
+          </div>
+          {onJoinProvider && (
+            <button
+              type="button"
+              className="provider-join-btn"
+              onClick={onJoinProvider}
+            >
+              Join as a Therapist →
+            </button>
+          )}
         </div>
       </div>
     </div>

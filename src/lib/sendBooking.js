@@ -1,6 +1,6 @@
 import { WEB3FORMS_ACCESS_KEY } from '../config'
 
-async function uploadImage(file) {
+export async function uploadImage(file) {
   try {
     const formData = new FormData()
     formData.append('reqtype', 'fileupload')

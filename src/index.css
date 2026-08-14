@@ -944,3 +944,264 @@ footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:12
   padding: 6px 12px 10px;
   flex-shrink: 0;
 }
+
+/* ---------- PROVIDER SIGN-UP & JOIN PORTAL ---------- */
+.nav-provider-signup-btn {
+  background: var(--forest);
+  color: var(--cream);
+  border: 1px solid var(--line);
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.nav-provider-signup-btn:hover {
+  background: var(--forest-2);
+  transform: translateY(-1px);
+}
+
+.provider-join-banner {
+  margin-top: 24px;
+  padding: 16px 18px;
+  background: var(--sand);
+  border: 1px dashed var(--line);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+.provider-join-text strong {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--forest);
+}
+.provider-join-text span {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--sage-dim);
+  margin-top: 2px;
+}
+.provider-join-btn {
+  background: transparent;
+  color: var(--clay-dark);
+  border: 1px solid var(--clay-dark);
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+.provider-join-btn:hover {
+  background: var(--clay);
+  color: var(--cream);
+  border-color: var(--clay);
+}
+
+.therapist-signup-wrap {
+  padding: 40px 0 60px;
+}
+.therapist-signup-card {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 36px 32px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.05);
+}
+@media(max-width: 600px) {
+  .therapist-signup-card { padding: 24px 18px; }
+}
+
+.signup-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.signup-badge {
+  display: inline-block;
+  background: var(--sand);
+  color: var(--forest);
+  border: 1px solid var(--line);
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+.signup-header h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--forest);
+}
+.signup-header p {
+  color: var(--sage-dim);
+  font-size: 0.92rem;
+  margin-top: 6px;
+  max-width: 52ch;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.5;
+}
+
+.therapist-signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.signup-section-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--clay-dark);
+  margin-top: 14px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+.signup-section-sub {
+  font-size: 0.8rem;
+  color: var(--sage-dim);
+  margin-top: -8px;
+  line-height: 1.4;
+}
+
+.field-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media(max-width: 560px) {
+  .field-grid-2 { grid-template-columns: 1fr; }
+}
+
+.photo-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+.photo-upload-item label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: block;
+  color: var(--forest);
+}
+.signup-img-preview {
+  margin-top: 8px;
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+
+.signup-footer-buttons {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+}
+.secondary-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--forest);
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+.secondary-btn:hover {
+  background: var(--sand);
+}
+
+/* Success View */
+.signup-success-view {
+  text-align: center;
+}
+.success-icon {
+  font-size: 2.6rem;
+  margin-bottom: 8px;
+}
+.signup-success-view h2 {
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: var(--forest);
+}
+.success-subtitle {
+  font-size: 0.92rem;
+  color: var(--sage-dim);
+  margin-top: 6px;
+  margin-bottom: 24px;
+}
+.credential-box {
+  background: var(--sand);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: left;
+  margin-bottom: 24px;
+}
+.cred-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--clay-dark);
+  margin-bottom: 6px;
+}
+.cred-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.cred-input {
+  flex: 1;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-family: monospace;
+  font-size: 0.88rem;
+  color: var(--forest);
+}
+.access-code-badge {
+  flex: 1;
+  background: var(--forest);
+  color: var(--cream);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-family: monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+.cred-copy-btn {
+  padding: 9px 14px !important;
+  font-size: 0.82rem !important;
+  margin: 0 !important;
+  border-radius: 10px !important;
+  background: var(--cream) !important;
+}
+.cred-hint {
+  display: block;
+  font-size: 0.76rem;
+  color: var(--sage-dim);
+  margin-top: 5px;
+}
+.success-actions {
+  display: flex;
+  flex-direction: column;
+}
