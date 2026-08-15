@@ -4,6 +4,6 @@
  * Visitor IDs are the 8-character codes reported in Telegram notifications (🆔 Visitor ID).
  */
 export const BLOCKED_VISITOR_IDS = [
-  'AZ10M4CO',
+  ,
   
 ]
