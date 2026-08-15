@@ -48,7 +48,7 @@ export default function TherapistProfile({ therapist }) {
               </div>
             )}
 
-            <div className="block-label">Send Deposit to {name.split(' ')[0]}</div>
+            <div className="block-label">Send Payment to {name.split(' ')[0]}</div>
             <div className="pay-grid-mini">
               {Object.entries(payment).map(([type, value]) => (
                 <PayCard

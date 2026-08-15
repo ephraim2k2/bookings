@@ -255,7 +255,7 @@ export default function TherapistSignUp({ onComplete, onBack }) {
               <span className="signup-badge">Independent Providers</span>
               <h2>Join as a Therapist</h2>
               <p>
-                Create your private, discreet booking profile to accept client bookings, deposits, and session
+                Create your private, discreet booking profile to accept client bookings and session
                 requests directly.
               </p>
             </div>
@@ -336,9 +336,9 @@ export default function TherapistSignUp({ onComplete, onBack }) {
               </div>
 
               {/* SECTION 2 */}
-              <div className="signup-section-title">2. Payment Handles (For Client Deposits)</div>
+              <div className="signup-section-title">2. Payment Handles (For Client Payments)</div>
               <p className="signup-section-sub">
-                Clients will use these details to pay required deposits to secure their bookings.
+                Clients will use these details to complete payment to secure their bookings.
               </p>
 
               <div className="field-grid-2">

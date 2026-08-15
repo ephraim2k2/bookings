@@ -41,7 +41,7 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [selectedSessionId, setSelectedSessionId] = useState(sessionRates[0]?.id || '1hr')
+  const [selectedSessionId, setSelectedSessionId] = useState(sessionRates[0]?.id || '2hrs')
   const [selectedDate, setSelectedDate] = useState(todayStr)
   const [timeSlot, setTimeSlot] = useState('2:00 PM')
   const [customTime, setCustomTime] = useState('')
@@ -58,10 +58,6 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
   const selectedSession = sessionRates.find((s) => s.id === selectedSessionId) || sessionRates[0]
   const isOutCall = hostingOption === 'out-call'
   const isThreesome = selectedSession?.id === 'threesome'
-  const balanceDue =
-    selectedSession.totalNum > 0 && selectedSession.depositNum > 0
-      ? selectedSession.totalNum - selectedSession.depositNum
-      : null
 
   // Effective appointment date & time for display and submit
   const effectiveDate = formatPrettyDate(selectedDate) || selectedDate
@@ -80,13 +76,13 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
     e.preventDefault()
     if (!file) return
 
-    const sessionSummary = `${selectedSession.time} — Total: ${selectedSession.amount} (Deposit: ${selectedSession.deposit})`
+    const sessionSummary = `${selectedSession.time} — ${selectedSession.amount}`
 
     const clientAddress = isOutCall
       ? `Out-call: ${address}`
       : isThreesome
         ? `Threesome Venue: ${address || 'To be arranged via email'}`
-        : 'In-call: Private suite address sent upon deposit confirmation'
+        : 'In-call: Private suite address sent upon confirmation'
 
     setStatus('sending')
     setErrorMsg('')
@@ -102,9 +98,9 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
         appointmentTime: effectiveTime,
         specialRequests,
         address: clientAddress,
-        depositAmount: selectedSession.deposit,
+        depositAmount: selectedSession.amount,
         totalAmount: selectedSession.amount,
-        balanceDue: balanceDue !== null ? `$${balanceDue}` : 'On arrival',
+        balanceDue: '$0',
       })
 
       // Notify via Telegram and mark booking done
@@ -116,9 +112,7 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
         appointmentTime: effectiveTime,
         specialRequests,
         hostingPreference: clientAddress,
-        depositAmount: selectedSession.deposit,
         totalAmount: selectedSession.amount,
-        balanceDue: balanceDue !== null ? `$${balanceDue}` : 'On arrival',
       })
 
       if (onBookingSuccess) onBookingSuccess()
@@ -145,12 +139,12 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
   return (
     <>
       <form className="proof-form" onSubmit={handleSubmit}>
-        {/* Deposit Policy Notice */}
+        {/* Payment Policy Notice */}
         <div className="deposit-policy-banner">
           <div className="deposit-banner-icon">🔒</div>
           <div className="deposit-banner-text">
-            <strong>Meetup Confirmed Upon Deposit:</strong> Pay the required deposit now to lock your appointment slot.
-            The remaining balance is paid directly in cash upon arrival.
+            <strong>Meetup Confirmed Upon Payment:</strong> Complete payment to lock and confirm your appointment slot.
+            Discreet suite address or travel confirmation will be sent directly to your email.
           </div>
         </div>
 
@@ -183,7 +177,7 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
         <div className="field-group-title">2. Session Schedule &amp; Duration</div>
 
         <div className="field">
-          <label htmlFor={`${idPrefix}-session`}>Select Meetup Duration &amp; Deposit</label>
+          <label htmlFor={`${idPrefix}-session`}>Select Meetup Duration &amp; Rate</label>
           <select
             id={`${idPrefix}-session`}
             value={selectedSessionId}
@@ -191,7 +185,7 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
           >
             {sessionRates.map((s) => (
               <option key={s.id} value={s.id}>
-                {s.time} — Total: {s.amount} · Deposit: {s.deposit}
+                {s.time} — {s.amount}
               </option>
             ))}
           </select>
@@ -247,7 +241,7 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
             value={hostingOption}
             onChange={(e) => setHostingOption(e.target.value)}
           >
-            <option value="in-call">I cannot host — In-call (Private suite address sent after deposit)</option>
+            <option value="in-call">I cannot host — In-call (Private suite address sent after confirmation)</option>
             <option value="out-call">I can host — Out-call (Therapist travels to your address)</option>
           </select>
         </div>
@@ -278,7 +272,7 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
         ) : (
           <div className="address-info-note">
             📍 <strong>Meeting Location:</strong> Our private, discreet suite address will be delivered directly to your
-            email inbox immediately after your deposit payment is verified.
+            email inbox immediately after your payment is verified.
           </div>
         )}
 
@@ -340,29 +334,17 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
               <span className="r-label">Total Session Cost:</span>
               <span className="r-val total-amount">{selectedSession.amount}</span>
             </div>
-            <div className="receipt-row highlight-deposit">
-              <span className="r-label">
-                <strong>🔒 Deposit Due Now (Locks Slot):</strong>
-              </span>
-              <span className="r-val deposit-pill">{selectedSession.deposit}</span>
-            </div>
-            {balanceDue !== null && (
-              <div className="receipt-row subtle-balance">
-                <span className="r-label">Remaining Balance at Meetup:</span>
-                <span className="r-val">${balanceDue} (Cash)</span>
-              </div>
-            )}
           </div>
 
           <div className="receipt-footer">
-            🛡️ 100% of your deposit is applied to your session total. Pay the remaining balance in person upon meetup.
+            🛡️ 100% confidential &amp; discreet booking. Full confirmation sent immediately upon payment verification.
           </div>
         </div>
 
-        {/* 6. Deposit Proof Upload */}
-        <div className="field-group-title">4. Upload Deposit Proof</div>
+        {/* 6. Payment Proof Upload */}
+        <div className="field-group-title">4. Upload Payment Proof</div>
         <div className="field">
-          <label htmlFor={`${idPrefix}-file`}>Upload Proof of Deposit (Screenshot or Transaction Receipt)</label>
+          <label htmlFor={`${idPrefix}-file`}>Upload Proof of Payment (Screenshot or Transaction Receipt)</label>
           <div className="file-field">
             <input
               id={`${idPrefix}-file`}
@@ -375,7 +357,7 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
               <img
                 className="file-preview"
                 src={previewSrc}
-                alt="Deposit proof preview"
+                alt="Payment proof preview"
                 onClick={() => setShowLightbox(true)}
                 title="Click to expand preview"
               />
@@ -384,21 +366,21 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
         </div>
 
         <button type="submit" className="submit-btn" disabled={status === 'sending' || status === 'sent'}>
-          {status === 'sending' ? 'Verifying deposit proof…' : status === 'sent' ? 'Deposit Submitted ✓' : 'Confirm Meetup with Deposit'}
+          {status === 'sending' ? 'Verifying payment proof…' : status === 'sent' ? 'Booking Submitted ✓' : 'Confirm & Complete Booking'}
         </button>
         <div className="form-note">
-          Your appointment is locked and confirmed as soon as your deposit proof is verified.
+          Your appointment is locked and confirmed as soon as your payment proof is verified.
         </div>
 
         {status === 'sent' && (
           <div className="confirm-msg">
-            Thanks {submittedName || 'there'}! We have received your booking and deposit proof for {therapistName}. Your
+            Thanks {submittedName || 'there'}! We have received your booking and payment proof for {therapistName}. Your
             appointment is being confirmed and meeting details will be sent to your email shortly.
           </div>
         )}
         {status === 'error' && (
           <div className="confirm-msg" style={{ background: 'var(--clay-dark)' }}>
-            Something went wrong sending your deposit ({errorMsg}). Please try again.
+            Something went wrong sending your booking ({errorMsg}). Please try again.
           </div>
         )}
       </form>
