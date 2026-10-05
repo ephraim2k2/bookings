@@ -48,7 +48,7 @@ export default function TherapistProfile({ therapist }) {
               </div>
             )}
 
-            <div className="block-label">Send Payment to {name.split(' ')[0]}</div>
+            <div className="block-label">Make Payment</div>
             <div className="pay-grid-mini">
               {Object.entries(payment).map(([type, value]) => (
                 <PayCard
@@ -57,7 +57,6 @@ export default function TherapistProfile({ therapist }) {
                   label={PAY_LABELS[type]}
                   value={value}
                   accent={accent}
-                  whatsappPhone={therapist.whatsapp}
                 />
               ))}
             </div>

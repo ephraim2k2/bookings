@@ -20,7 +20,7 @@ export default function Nav({ isIndividualPage, onNavigate }) {
           Grove &amp; Stone
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {onNavigate && (
+          {!isIndividualPage && onNavigate && (
             <button
               type="button"
               className="nav-provider-signup-btn"

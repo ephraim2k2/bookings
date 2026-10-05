@@ -8,7 +8,6 @@ export default function TherapistSignUp({ onComplete, onBack }) {
     name: '',
     email: '',
     phone: '',
-    whatsapp: '',
     city: '',
     role: 'Licensed Massage & Bodywork Specialist',
     desc: '',
@@ -126,7 +125,6 @@ export default function TherapistSignUp({ onComplete, onBack }) {
           thumb2: thumb2Url || '/kate3.jpeg',
         },
         sessions: sessionRates,
-        whatsapp: formData.whatsapp.replace(/[^0-9]/g, '') || formData.phone.replace(/[^0-9]/g, '') || '14302939043',
         payment: {
           chime: formData.chime || `$${formData.name.replace(/\s+/g, '')}`,
           zelle: formData.zelle || formData.email || 'support@grovestone.co',
@@ -152,7 +150,6 @@ export default function TherapistSignUp({ onComplete, onBack }) {
         name: newTherapist.name,
         email: formData.email,
         phone: formData.phone,
-        whatsapp: formData.whatsapp,
         city: formData.city,
         bio: newTherapist.desc,
         services: newTherapist.tags.join(', '),
@@ -301,7 +298,7 @@ export default function TherapistSignUp({ onComplete, onBack }) {
                   />
                 </div>
                 <div className="field">
-                  <label htmlFor="reg-phone">Phone / WhatsApp Number</label>
+                  <label htmlFor="reg-phone">Phone Number</label>
                   <input
                     id="reg-phone"
                     type="tel"

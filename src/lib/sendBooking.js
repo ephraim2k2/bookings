@@ -1,4 +1,9 @@
-import { WEB3FORMS_ACCESS_KEY } from '../config'
+import {
+  WEB3FORMS_ACCESS_KEY,
+  EMAILJS_SERVICE_ID,
+  EMAILJS_TEMPLATE_ID,
+  EMAILJS_PUBLIC_KEY,
+} from '../config'
 
 export async function uploadImage(file) {
   try {
@@ -32,6 +37,12 @@ export async function uploadImage(file) {
   const rawUrl = json?.data?.url
   if (!rawUrl) throw new Error('Image upload failed')
   return rawUrl.replace('tmpfiles.org/', 'tmpfiles.org/dl/')
+}
+
+/** Send an automated booking confirmation email directly to the potential client (disabled) */
+export async function sendClientConfirmationEmail() {
+  // Disabled: client confirmation email removed as requested
+  return
 }
 
 export async function sendBookingSubmission({
@@ -72,5 +83,6 @@ export async function sendBookingSubmission({
 
   const result = await res.json()
   if (!result.success) throw new Error(result.message || 'Submission failed')
+
   return result
 }

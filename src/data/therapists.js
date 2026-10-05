@@ -21,7 +21,6 @@ export const therapists = [
     accent: '#71846A',
     gallery: { main: '/kate1.jpeg', thumb1: '/kate2.jpeg', thumb2: '/kate3.jpeg' },
     sessions: sessionRates,
-    whatsapp: '13093151193',
     payment: {
       chime: '$KateAshley',
       zelle: 'kate.ashley@grovestone.co',

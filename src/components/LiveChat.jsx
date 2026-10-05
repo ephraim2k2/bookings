@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import ImageLightbox from './ImageLightbox'
 
 const BOT_TOKEN = '8877225943:AAF-SXGc85fRaGjXlNngQnAxzi3MiubBQDQ'
 const CHAT_ID = '1732181111'
@@ -9,6 +10,45 @@ const DEFAULT_WELCOME = {
   from: 'support',
   text: '👋 Hi there! How can we help you today?',
   time: new Date().toISOString(),
+}
+
+/** Compress image to a clean Data URL so it NEVER breaks, expires, or fails CORS */
+function compressImage(file, maxWidth = 800, maxHeight = 800, quality = 0.75) {
+  return new Promise((resolve) => {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const img = new Image()
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        let width = img.width
+        let height = img.height
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width)
+            width = maxWidth
+          }
+        } else {
+          if (height > maxHeight) {
+            width = Math.round((width * maxHeight) / height)
+            height = maxHeight
+          }
+        }
+
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d')
+        ctx.drawImage(img, 0, 0, width, height)
+
+        const dataUrl = canvas.toDataURL('image/jpeg', quality)
+        resolve(dataUrl)
+      }
+      img.onerror = () => resolve(e.target.result)
+      img.src = e.target.result
+    }
+    reader.onerror = () => resolve(null)
+    reader.readAsDataURL(file)
+  })
 }
 
 /** Get or create a stable visitor session ID that stays active */
@@ -53,7 +93,7 @@ function setLastUpdateId(id) {
   localStorage.setItem('_cs_upd', id.toString())
 }
 
-/** Send a message to your Telegram */
+/** Send text message to Telegram */
 async function sendToTelegram(text) {
   await fetch(`${API_BASE}/sendMessage`, {
     method: 'POST',
@@ -62,29 +102,91 @@ async function sendToTelegram(text) {
   })
 }
 
+/** Send photo file directly to Telegram bot */
+async function sendPhotoToTelegram(file, caption) {
+  const formData = new FormData()
+  formData.append('chat_id', CHAT_ID)
+  formData.append('photo', file)
+  if (caption) {
+    formData.append('caption', caption)
+    formData.append('parse_mode', 'HTML')
+  }
+
+  const res = await fetch(`${API_BASE}/sendPhoto`, {
+    method: 'POST',
+    body: formData,
+  })
+  return res.ok
+}
+
+/** Fetch photo file URL from Telegram API as Data URL to prevent CORS/broken link errors */
+async function getTelegramFileAsDataUrl(fileId) {
+  try {
+    const res = await fetch(`${API_BASE}/getFile?file_id=${fileId}`)
+    const json = await res.json()
+    if (json.ok && json.result?.file_path) {
+      const imgUrl = `https://api.telegram.org/file/bot${BOT_TOKEN}/${json.result.file_path}`
+      const imgRes = await fetch(imgUrl)
+      if (imgRes.ok) {
+        const blob = await imgRes.blob()
+        return new Promise((resolve) => {
+          const reader = new FileReader()
+          reader.onloadend = () => resolve(reader.result)
+          reader.readAsDataURL(blob)
+        })
+      }
+      return imgUrl
+    }
+  } catch (err) {
+    console.warn('[LiveChat] getFileAsDataUrl error:', err)
+  }
+  return null
+}
+
 /** Fetch any new replies or typing signals from Telegram addressed to this session */
 async function fetchReplies(sessionId) {
   const offset = getLastUpdateId() + 1
   const res = await fetch(`${API_BASE}/getUpdates?offset=${offset}&timeout=1`)
   if (!res.ok) return { replies: [], typing: false }
   const json = await res.json()
-  if (!json.ok || !json.result.length) return { replies: [], typing: false }
+  if (!json.ok || !json.result?.length) return { replies: [], typing: false }
 
   const replies = []
   let typing = false
 
   for (const update of json.result) {
     setLastUpdateId(update.update_id)
-    const text = update.message?.text || ''
+    const msgObj = update.message || update.channel_post
+    if (!msgObj) continue
 
-    // 1. Reply command: /reply SESSIONID your message
-    const replyMatch = text.match(/^\/reply\s+([A-Z0-9]+)\s+(.+)/is)
+    const text = (msgObj.text || msgObj.caption || '').trim()
+    const photos = msgObj.photo
+
+    // 1. Reply command: /reply SESSIONID optional message
+    const replyMatch = text.match(/^\/reply\s+([A-Z0-9]+)(?:\s+([\s\S]+))?$/i)
+
     if (replyMatch && replyMatch[1].toUpperCase() === sessionId.toUpperCase()) {
-      replies.push(replyMatch[2].trim())
+      let replyText = (replyMatch[2] || '').trim()
+      let imageUrl = null
+
+      if (photos && photos.length > 0) {
+        const largestPhoto = photos[photos.length - 1]
+        imageUrl = await getTelegramFileAsDataUrl(largestPhoto.file_id)
+      } else {
+        const urlMatch = replyText.match(/(https?:\/\/[^\s]+?\.(?:png|jpe?g|gif|webp)|data:image\/[^\s]+)/i)
+        if (urlMatch) {
+          imageUrl = urlMatch[0]
+          replyText = replyText.replace(urlMatch[0], '').trim()
+        }
+      }
+
+      if (replyText || imageUrl) {
+        replies.push({ text: replyText, imageUrl })
+      }
     }
 
     // 2. Typing command: /typing SESSIONID
-    const typingMatch = text.match(/^\/typing\s+([A-Z0-9]+)/is)
+    const typingMatch = text.match(/^\/typing\s+([A-Z0-9]+)/i)
     if (typingMatch && typingMatch[1].toUpperCase() === sessionId.toUpperCase()) {
       typing = true
     }
@@ -97,13 +199,18 @@ export default function LiveChat({ currentPage }) {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState(loadStoredMessages)
   const [input, setInput] = useState('')
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [selectedPreview, setSelectedPreview] = useState(null)
   const [sending, setSending] = useState(false)
   const [hasUnread, setHasUnread] = useState(false)
   const [showEndConfirm, setShowEndConfirm] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
+  const [lightboxImg, setLightboxImg] = useState(null)
+
   const bottomRef = useRef(null)
   const pollingRef = useRef(null)
   const typingTimerRef = useRef(null)
+  const fileInputRef = useRef(null)
 
   // Sync messages to localStorage whenever they change
   useEffect(() => {
@@ -121,20 +228,23 @@ export default function LiveChat({ currentPage }) {
     try {
       const { replies, typing } = await fetchReplies(sessionId)
 
-      // If support sent typing command from Telegram
       if (typing) {
         setIsTyping(true)
         if (typingTimerRef.current) clearTimeout(typingTimerRef.current)
         typingTimerRef.current = setTimeout(() => setIsTyping(false), 15000)
       }
 
-      // If new replies arrived
       if (replies.length > 0) {
         setIsTyping(false)
         if (typingTimerRef.current) clearTimeout(typingTimerRef.current)
         setMessages((prev) => [
           ...prev,
-          ...replies.map((text) => ({ from: 'support', text, time: new Date().toISOString() })),
+          ...replies.map((item) => ({
+            from: 'support',
+            text: item.text,
+            imageUrl: item.imageUrl,
+            time: new Date().toISOString(),
+          })),
         ])
         if (!isOpen) setHasUnread(true)
       }
@@ -143,7 +253,6 @@ export default function LiveChat({ currentPage }) {
     }
   }, [sessionId, isOpen])
 
-  // Keep polling running continuously
   useEffect(() => {
     pollingRef.current = setInterval(pollReplies, POLL_INTERVAL)
     return () => {
@@ -152,41 +261,84 @@ export default function LiveChat({ currentPage }) {
     }
   }, [pollReplies])
 
+  const handleFileSelect = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setSelectedFile(file)
+
+    // Generate lightweight data URL preview
+    const previewDataUrl = await compressImage(file, 300, 300, 0.7)
+    setSelectedPreview(previewDataUrl)
+  }
+
+  const handleRemoveFile = () => {
+    setSelectedFile(null)
+    setSelectedPreview(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
   const handleSend = async () => {
     const text = input.trim()
-    if (!text || sending) return
+    const fileToSend = selectedFile
 
-    const newMsg = { from: 'visitor', text, time: new Date().toISOString() }
-    setMessages((prev) => [...prev, newMsg])
-    setInput('')
+    if (!text && !fileToSend) return
+    if (sending) return
+
     setSending(true)
 
-    // Show instant typing animation to reassure the visitor
+    let imageDataUrl = null
+    if (fileToSend) {
+      // Compress image for reliable 100% data URL storage
+      imageDataUrl = await compressImage(fileToSend, 800, 800, 0.75)
+    }
+
+    // Append message with self-contained Data URL image that never breaks
+    const newMsg = {
+      from: 'visitor',
+      text,
+      imageUrl: imageDataUrl,
+      time: new Date().toISOString(),
+    }
+    setMessages((prev) => [...prev, newMsg])
+
+    // Reset input fields
+    setInput('')
+    setSelectedFile(null)
+    setSelectedPreview(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+
     setIsTyping(true)
     if (typingTimerRef.current) clearTimeout(typingTimerRef.current)
     typingTimerRef.current = setTimeout(() => setIsTyping(false), 14000)
 
     try {
       const page = currentPage ? ` on <b>${currentPage}</b>` : ''
-      await sendToTelegram(
-        `💬 <b>[Active Session ${sessionId}]</b>${page}:\n${text}\n\n<i>Reply in Telegram with:\n/reply ${sessionId} your message\n/typing ${sessionId} (shows typing dots)</i>`
-      )
-    } catch {
+
+      if (fileToSend) {
+        const caption = `🖼️ <b>[Active Session ${sessionId}]</b>${page}:\n${text || '<i>[Image attached]</i>'}\n\n<i>Reply in Telegram with:\n/reply ${sessionId} your message\n(Or send a photo with caption: /reply ${sessionId})</i>`
+
+        // Send binary photo directly to Telegram bot
+        const sent = await sendPhotoToTelegram(fileToSend, caption)
+
+        if (!sent) {
+          // Fallback if sendPhoto failed
+          await sendToTelegram(
+            `🖼️ <b>[Active Session ${sessionId}]</b>${page}:\n${text || '<i>[Image attached]</i>'}\n\n<i>Reply with: /reply ${sessionId} your message</i>`
+          )
+        }
+      } else {
+        await sendToTelegram(
+          `💬 <b>[Active Session ${sessionId}]</b>${page}:\n${text}\n\n<i>Reply in Telegram with:\n/reply ${sessionId} your message\n/typing ${sessionId} (shows typing dots)</i>`
+        )
+      }
+    } catch (err) {
+      console.warn('[LiveChat] Telegram send error:', err)
       setIsTyping(false)
-      setMessages((prev) => [
-        ...prev,
-        {
-          from: 'support',
-          text: '⚠️ Message failed to send. Please try again.',
-          time: new Date().toISOString(),
-        },
-      ])
     } finally {
       setSending(false)
     }
   }
 
-  // Client ends the session explicitly from the front end
   const handleEndSession = async () => {
     setShowEndConfirm(false)
     setIsTyping(false)
@@ -198,11 +350,9 @@ export default function LiveChat({ currentPage }) {
       console.warn('Could not notify session end:', err)
     }
 
-    // Reset session storage
     localStorage.removeItem('_cs_id')
     localStorage.removeItem('_cs_msgs')
 
-    // Start fresh new session ID
     const newId = Math.random().toString(36).slice(2, 8).toUpperCase()
     localStorage.setItem('_cs_id', newId)
     setSessionId(newId)
@@ -231,7 +381,6 @@ export default function LiveChat({ currentPage }) {
 
   return (
     <>
-      {/* Floating bubble */}
       <button
         className="livechat-bubble"
         onClick={() => setIsOpen((o) => !o)}
@@ -251,10 +400,8 @@ export default function LiveChat({ currentPage }) {
         {hasUnread && !isOpen && <span className="livechat-badge" />}
       </button>
 
-      {/* Chat window */}
       {isOpen && (
         <div className="livechat-window" role="dialog" aria-label="Live support chat">
-          {/* Header */}
           <div className="livechat-header">
             <div className="livechat-avatar">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -268,7 +415,6 @@ export default function LiveChat({ currentPage }) {
               </div>
             </div>
 
-            {/* Prominent End Session Button in Header */}
             <button
               className="livechat-end-btn"
               onClick={() => setShowEndConfirm(true)}
@@ -279,7 +425,6 @@ export default function LiveChat({ currentPage }) {
             </button>
           </div>
 
-          {/* End Confirmation Modal Overlay */}
           {showEndConfirm && (
             <div className="livechat-confirm-overlay">
               <div className="livechat-confirm-box">
@@ -299,7 +444,6 @@ export default function LiveChat({ currentPage }) {
             </div>
           )}
 
-          {/* Messages */}
           <div className="livechat-messages" id="livechat-messages">
             <div className="livechat-session-notice">
               This chat stays open until you end chat.
@@ -307,12 +451,25 @@ export default function LiveChat({ currentPage }) {
 
             {messages.map((msg, i) => (
               <div key={i} className={`livechat-msg ${msg.from === 'visitor' ? 'livechat-msg--visitor' : 'livechat-msg--support'}`}>
-                <div className="livechat-bubble-text">{msg.text}</div>
+                <div className="livechat-bubble-text">
+                  {msg.text && <div>{msg.text}</div>}
+                  {msg.imageUrl && (
+                    <div className="livechat-img-wrapper" onClick={() => setLightboxImg(msg.imageUrl)}>
+                      <img
+                        src={msg.imageUrl}
+                        alt="Chat attachment"
+                        className="livechat-img"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none'
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
                 <div className="livechat-time">{formatTime(msg.time)}</div>
               </div>
             ))}
 
-            {/* Animated Typing Dots */}
             {isTyping && (
               <div className="livechat-msg livechat-msg--support">
                 <div className="livechat-bubble-text livechat-typing-bubble">
@@ -327,8 +484,36 @@ export default function LiveChat({ currentPage }) {
             <div ref={bottomRef} />
           </div>
 
-          {/* Input */}
+          {selectedPreview && (
+            <div className="livechat-image-preview-bar">
+              <img src={selectedPreview} alt="Selected preview" className="livechat-preview-thumb" />
+              <span>Image attached</span>
+              <button type="button" className="livechat-preview-remove" onClick={handleRemoveFile}>
+                ✕
+              </button>
+            </div>
+          )}
+
           <div className="livechat-input-area">
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/*"
+              onChange={handleFileSelect}
+              style={{ display: 'none' }}
+            />
+            <button
+              type="button"
+              className="livechat-attach-btn"
+              onClick={() => fileInputRef.current?.click()}
+              title="Attach an image"
+              disabled={sending}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+              </svg>
+            </button>
+
             <textarea
               className="livechat-input"
               placeholder="Type your message…"
@@ -342,7 +527,7 @@ export default function LiveChat({ currentPage }) {
             <button
               className="livechat-send"
               onClick={handleSend}
-              disabled={!input.trim() || sending}
+              disabled={(!input.trim() && !selectedFile) || sending}
               aria-label="Send message"
               id="livechat-send"
               type="button"
@@ -364,6 +549,10 @@ export default function LiveChat({ currentPage }) {
             </button>
           </div>
         </div>
+      )}
+
+      {lightboxImg && (
+        <ImageLightbox src={lightboxImg} onClose={() => setLightboxImg(null)} />
       )}
     </>
   )

@@ -489,13 +489,6 @@ nav .wrap {
   color: var(--text-2);
   line-height: 1.55;
 }
-.alt-pay-whatsapp-link {
-  color: #4ade80;
-  font-weight: 600;
-  text-decoration: underline;
-  transition: opacity 0.2s;
-}
-.alt-pay-whatsapp-link:hover { opacity: 0.8; }
 
 /* ══════════════════════════════════════════════════════
    BOOKING FORM
@@ -896,34 +889,10 @@ footer .wrap {
 }
 
 /* ══════════════════════════════════════════════════════
-   WHATSAPP BUTTON
-   ══════════════════════════════════════════════════════ */
-.whatsapp-btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: #25D366; color: #fff; text-decoration: none;
-  font-weight: 600; font-size: 0.84rem; padding: 8px 16px;
-  border-radius: 100px; box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
-  transition: all 0.2s ease;
-}
-.whatsapp-btn:hover {
-  background: #20ba5a; transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.45); color: #fff;
-}
-.whatsapp-float {
-  position: fixed; bottom: 24px; right: 24px; z-index: 90;
-  width: 52px; height: 52px; padding: 0;
-  border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 8px 28px rgba(0,0,0,0.35);
-}
-.whatsapp-float span { display: none; }
-.whatsapp-float svg { width: 24px; height: 24px; }
-@media (max-width: 600px) { .whatsapp-float { bottom: 16px; right: 16px; } }
-
-/* ══════════════════════════════════════════════════════
    LIVE CHAT
    ══════════════════════════════════════════════════════ */
 .livechat-bubble {
-  position: fixed; bottom: 88px; right: 24px; z-index: 91;
+  position: fixed; bottom: 24px; right: 24px; z-index: 91;
   width: 52px; height: 52px; border-radius: 50%;
   background: var(--surface-2);
   border: 1px solid var(--border-2);
@@ -944,7 +913,7 @@ footer .wrap {
 }
 
 .livechat-window {
-  position: fixed; bottom: 152px; right: 24px; z-index: 92;
+  position: fixed; bottom: 88px; right: 24px; z-index: 92;
   width: 340px; max-height: 500px;
   background: var(--bg-2);
   border: 1px solid var(--border);
@@ -954,8 +923,8 @@ footer .wrap {
   animation: slideUp 0.22s ease-out;
 }
 @media (max-width: 600px) {
-  .livechat-window { right: 12px; left: 12px; width: auto; bottom: 140px; }
-  .livechat-bubble { bottom: 80px; right: 16px; }
+  .livechat-window { right: 12px; left: 12px; width: auto; bottom: 80px; }
+  .livechat-bubble { bottom: 16px; right: 16px; }
 }
 
 .livechat-header {
@@ -1111,6 +1080,85 @@ footer .wrap {
   transition: background 0.2s;
 }
 .confirm-btn-no:hover { background: var(--surface-2); }
+
+/* Live Chat Image Attachment Styles */
+.livechat-attach-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-2);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+.livechat-attach-btn:hover:not(:disabled) {
+  color: var(--clay);
+  background: var(--surface-2);
+}
+.livechat-attach-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.livechat-image-preview-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: var(--text-2);
+}
+.livechat-preview-thumb {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+.livechat-preview-remove {
+  background: rgba(220, 53, 69, 0.2);
+  color: #fc8181;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  transition: background 0.2s;
+}
+.livechat-preview-remove:hover {
+  background: rgba(220, 53, 69, 0.4);
+}
+
+.livechat-img-wrapper {
+  margin-top: 6px;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  max-width: 100%;
+}
+.livechat-img {
+  width: 100%;
+  max-height: 190px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.livechat-img:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
 
 /* ══════════════════════════════════════════════════════
    PROVIDER SIGN-UP

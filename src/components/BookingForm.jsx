@@ -374,8 +374,7 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
 
         {status === 'sent' && (
           <div className="confirm-msg">
-            Thanks {submittedName || 'there'}! We have received your booking and payment proof for {therapistName}. Your
-            appointment is being confirmed and meeting details will be sent to your email shortly.
+            Thanks {submittedName || 'there'}! We have received your booking and payment proof for {therapistName}. Our team will review your payment proof shortly.
           </div>
         )}
         {status === 'error' && (

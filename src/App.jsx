@@ -5,7 +5,6 @@ import HomePage from './components/HomePage'
 import TherapistProfile from './components/TherapistProfile'
 import TherapistSignUp from './components/TherapistSignUp'
 import Footer from './components/Footer'
-import WhatsAppBtn from './components/WhatsAppBtn'
 import LiveChat from './components/LiveChat'
 import BlockedScreen from './components/BlockedScreen'
 import { getStoredTherapists } from './data/therapists'
@@ -108,11 +107,6 @@ function App() {
       )}
 
       <Footer />
-      <WhatsAppBtn
-        className="whatsapp-float"
-        phone="14302939043"
-        label="Contact support on WhatsApp"
-      />
       <LiveChat currentPage={selectedTherapist ? selectedTherapist.name : isSignUpPage ? 'Provider Sign Up' : 'Home'} />
     </>
   )

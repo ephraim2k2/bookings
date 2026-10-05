@@ -1,20 +1,24 @@
 import { useState } from 'react'
 import PaymentIcon from './PaymentIcon'
 
-export default function PayCard({ type, label, value, accent, whatsappPhone = '14302939043' }) {
+export default function PayCard({ type, label, value, accent }) {
   const [copied, setCopied] = useState(false)
 
   const isBtc = type === 'btc'
-  const cleanPhone = String(whatsappPhone).replace(/[^0-9]/g, '')
-  const whatsappUrl = `https://wa.me/${cleanPhone}?text=Hello%2C%20I%20would%20like%20to%20request%20payment%20details%20for%20${encodeURIComponent(
-    label
-  )}`
 
   const handleCopy = () => {
     navigator.clipboard.writeText(value).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
     })
+  }
+
+  const handleSupportClick = (e) => {
+    e.preventDefault()
+    const chatToggle = document.getElementById('livechat-toggle')
+    if (chatToggle) {
+      chatToggle.click()
+    }
   }
 
   return (
@@ -30,15 +34,14 @@ export default function PayCard({ type, label, value, accent, whatsappPhone = '1
             </button>
           </>
         ) : (
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={handleSupportClick}
             className="copy-btn pay-card-support-btn"
-            style={{ textDecoration: 'none', display: 'inline-block', marginTop: '6px' }}
+            style={{ display: 'inline-block', marginTop: '6px', cursor: 'pointer' }}
           >
             Contact support →
-          </a>
+          </button>
         )}
       </div>
     </div>
