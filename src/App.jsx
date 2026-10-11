@@ -16,18 +16,18 @@ function getRouteFromHash() {
 }
 
 function App() {
-  // Block check — runs before anything renders
-  const visitorId = localStorage.getItem('_vid')
-  if (visitorId && BLOCKED_VISITOR_IDS.map(id => id.toUpperCase()).includes(visitorId.toUpperCase())) {
-    return <BlockedScreen />
-  }
-
   const [currentRoute, setCurrentRoute] = useState(getRouteFromHash)
   const [therapistsList, setTherapistsList] = useState(getStoredTherapists)
 
   const refreshTherapists = () => {
     setTherapistsList(getStoredTherapists())
   }
+
+  // Block check
+  const visitorId = typeof localStorage !== 'undefined' ? localStorage.getItem('_vid') : null
+  const isBlocked =
+    visitorId &&
+    BLOCKED_VISITOR_IDS.map((id) => id.toUpperCase()).includes(visitorId.toUpperCase())
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -65,6 +65,10 @@ function App() {
       document.removeEventListener('dragstart', handleDragStart)
     }
   }, [])
+
+  if (isBlocked) {
+    return <BlockedScreen />
+  }
 
   const navigateTo = (route) => {
     window.location.hash = `#/${route === 'home' ? '' : route}`

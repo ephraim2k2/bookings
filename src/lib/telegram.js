@@ -1,7 +1,15 @@
+import { TELEGRAM_BOT_TOKEN as BOT_TOKEN, TELEGRAM_CHAT_ID as CHAT_ID } from '../config.js'
+
 // ─── Telegram Bot Config ──────────────────────────────────────────────────────
-const BOT_TOKEN = '8877225943:AAF-SXGc85fRaGjXlNngQnAxzi3MiubBQDQ'
-const CHAT_ID = '1732181111'
-const API = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`
+const isLocal =
+  typeof window !== 'undefined' &&
+  (window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname.endsWith('.local'))
+
+const API = isLocal
+  ? `/api/telegram/bot${BOT_TOKEN}/sendMessage`
+  : `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -147,8 +155,16 @@ export function trackBookingSubmission({
   hostingPreference,
   depositAmount,
   totalAmount,
-  balanceDue,
+  balanceDue: _balanceDue,
 }) {
+  // If payment proof and details were already sent via sendBookingSubmission, skip duplicate text notification
+  try {
+    const lastSent = parseInt(sessionStorage.getItem('_last_booking_telegram') || '0', 10)
+    if (Date.now() - lastSent < 15000) {
+      return
+    }
+  } catch {}
+
   const visitorId = getVisitorId()
   const time = formatTime()
 

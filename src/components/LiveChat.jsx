@@ -1,9 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import ImageLightbox from './ImageLightbox'
+import { TELEGRAM_BOT_TOKEN as BOT_TOKEN, TELEGRAM_CHAT_ID as CHAT_ID } from '../config'
 
-const BOT_TOKEN = '8877225943:AAF-SXGc85fRaGjXlNngQnAxzi3MiubBQDQ'
-const CHAT_ID = '1732181111'
-const API_BASE = `https://api.telegram.org/bot${BOT_TOKEN}`
+const isLocal =
+  typeof window !== 'undefined' &&
+  (window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname.endsWith('.local'))
+
+const API_BASE = isLocal ? `/api/telegram/bot${BOT_TOKEN}` : `https://api.telegram.org/bot${BOT_TOKEN}`
 const POLL_INTERVAL = 3000 // 3 seconds
 
 const DEFAULT_WELCOME = {
