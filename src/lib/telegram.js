@@ -14,7 +14,7 @@ const API = isLocal
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 /** Get or create a stable anonymous visitor ID stored in localStorage */
-function getVisitorId() {
+export function getVisitorId() {
   const KEY = '_vid'
   let id = localStorage.getItem(KEY)
   if (!id) {
@@ -232,6 +232,24 @@ export function trackTherapistRegistration({
   ]
     .filter(Boolean)
     .join('\n')
+
+  sendTelegram(msg)
+}
+
+/**
+ * Track when a visitor enables browser push notifications.
+ */
+export function trackPushOptIn(visitorId) {
+  const time = formatTime()
+  const msg = [
+    `🔔 *PUSH NOTIFICATIONS ENABLED\\!*`,
+    ``,
+    `🆔 *Visitor ID:* \`${esc(visitorId)}\``,
+    `📱 *Device:* Allowed web push alerts`,
+    `🕐 *Time:* ${esc(time)}`,
+    ``,
+    `_This visitor can now receive lock-screen push notifications via OneSignal!_`,
+  ].join('\n')
 
   sendTelegram(msg)
 }

@@ -1294,3 +1294,522 @@ footer .wrap {
 .card-body { padding: 22px; display: flex; flex-direction: column; flex-grow: 1; }
 .card-name { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 600; color: var(--text); }
 .card-desc { color: var(--text-2); font-size: 0.88rem; margin-top: 8px; flex-grow: 1; line-height: 1.55; }
+
+/* ══════════════════════════════════════════════════════
+   BOOKING RECEIPT BREAKDOWN (SCREENSHOT & CONFIRMATION)
+   ══════════════════════════════════════════════════════ */
+.receipt-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fadeInUp 0.35s ease-out;
+  margin-top: 12px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.receipt-screenshot-banner {
+  background: linear-gradient(135deg, rgba(201, 124, 109, 0.18), rgba(201, 124, 109, 0.08));
+  border: 1.5px dashed var(--clay);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text);
+  box-shadow: 0 4px 18px rgba(201, 124, 109, 0.15);
+}
+
+.screenshot-banner-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.screenshot-banner-text {
+  flex: 1;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.screenshot-banner-text strong {
+  color: var(--clay);
+  font-weight: 700;
+  display: block;
+  letter-spacing: 0.03em;
+  margin-bottom: 2px;
+}
+
+.screenshot-pulse-badge {
+  background: var(--clay);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 100px;
+  white-space: nowrap;
+  animation: pulse 1.5s infinite;
+}
+
+.booking-receipt-card {
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+.booking-receipt-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--clay), var(--clay-2), var(--clay));
+}
+
+.receipt-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.receipt-brand-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.receipt-brand-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--clay);
+  text-transform: uppercase;
+}
+
+.receipt-brand-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 3px;
+  letter-spacing: -0.01em;
+}
+
+.receipt-brand-sub {
+  font-size: 0.8rem;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.receipt-status-stamp {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.receipt-stamp-badge {
+  background: rgba(74, 222, 128, 0.15);
+  color: var(--green);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+}
+
+.receipt-stamp-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  display: inline-block;
+  box-shadow: 0 0 8px var(--green);
+}
+
+.receipt-stamp-time {
+  font-size: 0.72rem;
+  color: var(--text-3);
+}
+
+.receipt-zigzag-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 18px 0;
+  position: relative;
+}
+
+.receipt-ref-banner {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.receipt-ref-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-3);
+}
+
+.receipt-ref-code-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.receipt-ref-code {
+  font-family: monospace;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--clay);
+}
+
+.receipt-copy-btn {
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  color: var(--text);
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.receipt-copy-btn:hover {
+  background: var(--clay-dim);
+  border-color: var(--clay);
+  color: var(--clay);
+}
+
+.receipt-ref-hint {
+  font-size: 0.74rem;
+  color: var(--text-3);
+}
+
+.receipt-section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--clay);
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.receipt-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 540px) {
+  .receipt-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.receipt-grid-item {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.receipt-grid-item.full-width-box {
+  margin-top: 10px;
+}
+
+.receipt-grid-item.notes-box {
+  background: rgba(201, 124, 109, 0.05);
+  border-color: rgba(201, 124, 109, 0.2);
+}
+
+.r-item-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+}
+
+.r-item-val {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.r-item-val.font-highlight {
+  color: var(--clay);
+  font-size: 0.94rem;
+  font-weight: 700;
+}
+
+.r-item-val.location-val {
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--text-2);
+}
+
+.r-item-val.italic-notes {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--text-2);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.receipt-financial-card {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.receipt-fin-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.86rem;
+}
+
+.receipt-fin-row .fin-label {
+  color: var(--text-2);
+  font-weight: 500;
+}
+
+.receipt-fin-row .fin-val {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.receipt-fin-row.fin-divider {
+  border-top: 1px dashed var(--border);
+  margin: 4px 0;
+}
+
+.receipt-fin-row.fin-total-row {
+  padding-top: 2px;
+}
+
+.receipt-fin-row .fin-due {
+  color: var(--green);
+  font-size: 0.96rem;
+  font-weight: 700;
+}
+
+.receipt-fin-row .fin-success {
+  color: var(--green);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 600;
+}
+
+.receipt-proof-preview-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.proof-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.proof-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.proof-sub {
+  font-size: 0.72rem;
+  color: var(--text-3);
+}
+
+.receipt-proof-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1.5px solid var(--border-2);
+  cursor: zoom-in;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.receipt-proof-thumb:hover {
+  transform: scale(1.06);
+  border-color: var(--clay);
+}
+
+.receipt-protocol-box {
+  background: rgba(201, 124, 109, 0.08);
+  border: 1px solid rgba(201, 124, 109, 0.25);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-top: 16px;
+}
+
+.protocol-header {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--clay);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.protocol-list {
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-2);
+  line-height: 1.45;
+}
+
+.receipt-card-footer {
+  border-top: 1px solid var(--border);
+  margin-top: 18px;
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: var(--text-3);
+  line-height: 1.4;
+}
+
+.receipt-action-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.receipt-action-btn {
+  flex: 1;
+  min-width: 140px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.receipt-action-btn.primary {
+  background: linear-gradient(135deg, var(--clay), var(--clay-2));
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 16px rgba(201, 124, 109, 0.35);
+}
+
+.receipt-action-btn.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(201, 124, 109, 0.45);
+}
+
+.receipt-action-btn.secondary {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border-2);
+}
+
+.receipt-action-btn.secondary:hover {
+  background: var(--surface-hover);
+  border-color: var(--clay);
+  color: var(--clay);
+}
+
+.receipt-action-btn.outline {
+  background: transparent;
+  color: var(--text-2);
+  border: 1px solid var(--border);
+}
+
+.receipt-action-btn.outline:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+
+/* Print Styles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #booking-receipt-printable, #booking-receipt-printable * {
+    visibility: visible;
+  }
+  #booking-receipt-printable {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    background: #fff !important;
+    color: #111 !important;
+  }
+  .booking-receipt-card {
+    background: #fff !important;
+    color: #111 !important;
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+  }
+  .r-item-val, .fin-val, .receipt-brand-title {
+    color: #111 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
+

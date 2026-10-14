@@ -63,7 +63,7 @@ export default function TherapistProfile({ therapist }) {
 
             <div className="block-label">Complete Your Booking</div>
             <BookingForm
-              therapistName={name.split(' ')[0]}
+              therapistName={name}
               idPrefix={id}
               onBookingSuccess={handleBookingSuccess}
             />

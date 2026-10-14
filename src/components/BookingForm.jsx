@@ -3,6 +3,7 @@ import { sendBookingSubmission } from '../lib/sendBooking'
 import { trackBookingSubmission } from '../lib/telegram'
 import { sessionRates } from '../data/therapists'
 import ImageLightbox from './ImageLightbox'
+import BookingReceipt from './BookingReceipt'
 
 const POPULAR_TIME_SLOTS = [
   'ASAP / Next Available',
@@ -50,10 +51,10 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
   const [address, setAddress] = useState('')
   const [file, setFile] = useState(null)
   const [previewSrc, setPreviewSrc] = useState(null)
-  const [submittedName, setSubmittedName] = useState('')
   const [showLightbox, setShowLightbox] = useState(false)
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
   const [errorMsg, setErrorMsg] = useState('')
+  const [receiptData, setReceiptData] = useState(null)
 
   const selectedSession = sessionRates.find((s) => s.id === selectedSessionId) || sessionRates[0]
   const isOutCall = hostingOption === 'out-call'
@@ -116,24 +117,56 @@ export default function BookingForm({ therapistName, idPrefix, onBookingSuccess 
       })
 
       if (onBookingSuccess) onBookingSuccess()
-      setSubmittedName(currentName)
-      setStatus('sent')
-      setName('')
-      setEmail('')
-      setAddress('')
-      setSpecialRequests('')
-      setFile(null)
-      setPreviewSrc(null)
-      e.target.reset()
 
-      // Reload page after 3 seconds
-      setTimeout(() => {
-        window.location.reload()
-      }, 3000)
+      // Generate a distinct booking reference code
+      const randDigits = Math.floor(10000 + Math.random() * 90000)
+      const refCode = `GS-${randDigits}`
+
+      setReceiptData({
+        refCode,
+        clientName: currentName,
+        clientEmail: email,
+        therapistName,
+        sessionType: sessionSummary,
+        duration: selectedSession.time,
+        rate: selectedSession.amount,
+        date: effectiveDate,
+        time: effectiveTime,
+        hostingOption,
+        address: clientAddress,
+        specialRequests: specialRequests.trim(),
+        proofPreview: previewSrc,
+        submittedAt: new Date().toLocaleString('en-US', {
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+        }),
+      })
+
+      setStatus('sent')
     } catch (err) {
       setStatus('error')
       setErrorMsg(err.message)
     }
+  }
+
+  const handleReset = () => {
+    setStatus('idle')
+    setReceiptData(null)
+    setName('')
+    setEmail('')
+    setAddress('')
+    setSpecialRequests('')
+    setFile(null)
+    setPreviewSrc(null)
+  }
+
+  if (status === 'sent' && receiptData) {
+    return <BookingReceipt receipt={receiptData} onReset={handleReset} />
   }
 
   return (
