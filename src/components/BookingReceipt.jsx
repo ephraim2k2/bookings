@@ -45,7 +45,7 @@ export default function BookingReceipt({ receipt, onReset }) {
     <>
       <div className="receipt-container" id="booking-receipt-printable">
         {/* Top Screenshot Callout Banner */}
-        <div className="receipt-screenshot-banner">
+        <div className="receipt-screenshot-banner no-print">
           <div className="screenshot-banner-icon">📸</div>
           <div className="screenshot-banner-text">
             <strong>SCREENSHOT THIS RECEIPT NOW:</strong> Save this screen or take a screenshot as your official proof of booking &amp; arrival pass.
@@ -165,7 +165,7 @@ export default function BookingReceipt({ receipt, onReset }) {
             </div>
 
             {proofPreview && (
-              <div className="receipt-proof-preview-row">
+              <div className="receipt-proof-preview-row no-print">
                 <div className="proof-meta">
                   <span className="proof-label">Payment Proof Attached:</span>
                   <span className="proof-sub">Click thumbnail to view screenshot</span>
