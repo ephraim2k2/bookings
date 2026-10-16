@@ -34,9 +34,35 @@
         s.parentNode.insertBefore(g, s);
       }(document, "script"));
     </script>
-    <!-- End PushAlert -->
+    <!-- Inline critical preloader background -->
+    <style>
+      #splash-preloader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999999;
+        background: radial-gradient(circle at 50% 45%, #181412 0%, #0d0b0a 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+    </style>
   </head>
   <body>
+    <!-- Luxury Initial Splash Screen -->
+    <div id="splash-preloader">
+      <div class="splash-content">
+        <div class="splash-badge">
+          <span class="splash-monogram">GS</span>
+        </div>
+        <div class="splash-title">GROVE &amp; STONE</div>
+        <div class="splash-subtitle">WELLNESS &amp; CONCIERGE</div>
+        <div class="splash-bar">
+          <div class="splash-bar-fill"></div>
+        </div>
+      </div>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

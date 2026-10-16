@@ -94,6 +94,43 @@ async function sendTelegram(text) {
   }
 }
 
+/** Escape HTML characters safely for Telegram HTML mode */
+function escHtml(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+}
+
+/** Send an HTML formatted message to Telegram with plain text fallback */
+async function sendTelegramHtml(htmlText) {
+  try {
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: CHAT_ID,
+        text: htmlText,
+        parse_mode: 'HTML',
+      }),
+    })
+    if (!res.ok) {
+      // Fallback to plain text if HTML somehow had an invalid tag
+      const plain = htmlText.replace(/<[^>]*>/g, '')
+      await fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text: plain,
+        }),
+      })
+    }
+  } catch (err) {
+    console.warn('[Telegram] Send error:', err)
+  }
+}
+
 // ─── Public API ───────────────────────────────────────────────────────────────
 
 /**
@@ -252,4 +289,42 @@ export function trackPushOptIn(visitorId) {
   ].join('\n')
 
   sendTelegram(msg)
+}
+
+/**
+ * Track a new client review submission.
+ */
+export async function trackReviewSubmission({
+  therapistName,
+  clientName,
+  rating,
+  refCode,
+  comment,
+}) {
+  const visitorId = getVisitorId()
+  const time = formatTime()
+  const stars = '⭐'.repeat(Math.max(1, Math.min(5, Number(rating) || 5)))
+
+  const text = [
+    `⭐️ <b>NEW CLIENT REVIEW (PENDING APPROVAL)</b>`,
+    ``,
+    `💆 <b>Therapist:</b> ${escHtml(therapistName)}`,
+    `⭐ <b>Rating:</b> ${escHtml(rating)} / 5 Stars (${stars})`,
+    `👤 <b>Client:</b> ${escHtml(clientName || 'Anonymous')}`,
+    refCode
+      ? `🎫 <b>Booking Ref:</b> <code>${escHtml(refCode)}</code> <i>(✓ Verified)</i>`
+      : `🎫 <b>Booking Ref:</b> <i>None provided</i>`,
+    comment ? `💬 <b>Comment:</b> "${escHtml(comment)}"` : null,
+    ``,
+    `🕐 <b>Submitted:</b> ${escHtml(time)}`,
+    `🆔 <b>Visitor ID:</b> <code>${escHtml(visitorId)}</code>`,
+    ``,
+    `━━━━━━━━━━━━━━━━━━━`,
+    `<b>📋 TO APPROVE FOR ALL VISITORS:</b>`,
+    `Forward or copy this message to your coding assistant and say <i>"Approve"</i> — it will be live on your site immediately!`,
+  ]
+    .filter(Boolean)
+    .join('\n')
+
+  await sendTelegramHtml(text)
 }

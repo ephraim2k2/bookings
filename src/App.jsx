@@ -7,6 +7,7 @@ import TherapistSignUp from './components/TherapistSignUp'
 import Footer from './components/Footer'
 import LiveChat from './components/LiveChat'
 import BlockedScreen from './components/BlockedScreen'
+import TopLoader from './components/TopLoader'
 import { getStoredTherapists } from './data/therapists'
 import { BLOCKED_VISITOR_IDS } from './data/blocklist'
 
@@ -18,6 +19,7 @@ function getRouteFromHash() {
 function App() {
   const [currentRoute, setCurrentRoute] = useState(getRouteFromHash)
   const [therapistsList, setTherapistsList] = useState(getStoredTherapists)
+  const [isPageLoading, setIsPageLoading] = useState(false)
 
   const refreshTherapists = () => {
     setTherapistsList(getStoredTherapists())
@@ -66,11 +68,31 @@ function App() {
     }
   }, [])
 
+  // Smoothly dismiss the luxury initial splash screen
+  useEffect(() => {
+    const splash = document.getElementById('splash-preloader')
+    if (splash) {
+      const timer = setTimeout(() => {
+        splash.classList.add('splash-fade-out')
+        setTimeout(() => {
+          splash.style.display = 'none'
+        }, 700)
+      }, 1100)
+      return () => clearTimeout(timer)
+    }
+  }, [])
+
   if (isBlocked) {
     return <BlockedScreen />
   }
 
   const navigateTo = (route) => {
+    if (route !== currentRoute) {
+      setIsPageLoading(true)
+      setTimeout(() => {
+        setIsPageLoading(false)
+      }, 350)
+    }
     window.location.hash = `#/${route === 'home' ? '' : route}`
     setCurrentRoute(route)
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -88,6 +110,7 @@ function App() {
 
   return (
     <>
+      <TopLoader isLoading={isPageLoading} />
       <Nav
         isIndividualPage={Boolean(selectedTherapist && currentRoute !== 'home')}
         onNavigate={navigateTo}

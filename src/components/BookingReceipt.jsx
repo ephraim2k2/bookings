@@ -205,6 +205,29 @@ export default function BookingReceipt({ receipt, onReset }) {
           <button type="button" className="receipt-action-btn primary" onClick={handlePrint}>
             🖨️ Print / Save PDF
           </button>
+          <button
+            type="button"
+            className="receipt-action-btn review"
+            onClick={() => {
+              const reviewSection = document.getElementById('reviews-section')
+              if (reviewSection) {
+                reviewSection.scrollIntoView({ behavior: 'smooth' })
+                const writeBtn = document.querySelector('.write-review-btn')
+                if (writeBtn && !document.querySelector('.review-form-card')) {
+                  writeBtn.click()
+                }
+                setTimeout(() => {
+                  const refInput = document.getElementById('review-ref-code')
+                  if (refInput && refCode) {
+                    refInput.value = refCode
+                    refInput.dispatchEvent(new Event('input', { bubbles: true }))
+                  }
+                }, 200)
+              }
+            }}
+          >
+            ⭐️ Leave a Review
+          </button>
           <button type="button" className="receipt-action-btn secondary" onClick={handleOpenChat}>
             💬 Concierge Support
           </button>

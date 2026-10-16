@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import Gallery from './Gallery'
 import PayCard from './PayCard'
 import BookingForm from './BookingForm'
+import ReviewsSection from './ReviewsSection'
 import { trackProfileVisit } from '../lib/telegram'
 
 const PAY_LABELS = {
@@ -69,6 +70,13 @@ export default function TherapistProfile({ therapist }) {
             />
           </div>
         </div>
+
+        {/* Client Reviews & Star Ratings */}
+        <ReviewsSection
+          therapistId={id}
+          therapistName={name}
+          accent={accent}
+        />
       </div>
     </section>
   )
